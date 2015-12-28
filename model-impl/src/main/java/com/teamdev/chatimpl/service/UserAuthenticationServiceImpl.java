@@ -59,6 +59,11 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             throw new AccessControlException("Access denied.");
         }
 
+        if(userRepository.findOne(userToken.getUserId()) == null){
+            tokenRepository.delete(userToken);
+            throw new AccessControlException("Access denied.");
+        }
+
         return userToken.getUserId();
     }
 

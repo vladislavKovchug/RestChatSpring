@@ -10,11 +10,13 @@ import com.teamdev.chatimpl.repository.UserRepository;
 import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.entity.Message;
 import com.teamdev.database.entity.User;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
 
+@Service
 public class MessageServiceImpl implements MessageService {
 
     @Inject

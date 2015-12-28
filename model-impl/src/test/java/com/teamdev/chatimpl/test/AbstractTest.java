@@ -1,8 +1,6 @@
 package com.teamdev.chatimpl.test;
 
-import com.teamdev.chat.service.ChatRoomService;
-import com.teamdev.chat.service.UserAuthenticationService;
-import com.teamdev.chat.service.UserManagementService;
+import com.teamdev.chat.service.*;
 import com.teamdev.database.ChatDatabase;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Bean;
@@ -36,5 +34,11 @@ public abstract class AbstractTest {
 
     @Inject
     UserManagementService userManagementService;
+
+    @Inject
+    UserService userService;
+
+    @Inject
+    MessageService messageService;
 
 }
