@@ -1,9 +1,8 @@
-package com.teamdev.chat.test;
+package com.teamdev.chatimpl.test;
 
 import com.teamdev.chat.service.ChatRoomService;
 import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.service.UserManagementService;
-import com.teamdev.chatimpl.service.UserAuthenticationServiceImpl;
 import com.teamdev.database.ChatDatabase;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Bean;
