@@ -1,13 +1,5 @@
 package com.teamdev.servlet;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Date;
-
 import com.teamdev.chat.ContextConfiguration;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.RegisterUserDTO;
@@ -17,10 +9,18 @@ import com.teamdev.chat.service.UserManagementService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Date;
+
 
 public class RestServlet extends HttpServlet {
 
-    ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
     private void handleLogin(String login, String password, PrintWriter writer){
         final UserAuthenticationService userAuthenticationService = applicationContext.getBean(UserAuthenticationService.class);
@@ -52,7 +52,6 @@ public class RestServlet extends HttpServlet {
         final ChatRoomService chatRoomService = applicationContext.getBean(ChatRoomService.class);
         chatRoomService.addChatRoom("chat");
         chatRoomService.addChatRoom("chat 2");
-        chatRoomService.addChatRoom("porn");
 
         System.out.println("database was initialized");
         super.init();
@@ -62,7 +61,6 @@ public class RestServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("GET request happened");
 
-        final String contextPath = req.getContextPath();
         resp.setContentType("text/html");
         final PrintWriter writer = resp.getWriter();
 

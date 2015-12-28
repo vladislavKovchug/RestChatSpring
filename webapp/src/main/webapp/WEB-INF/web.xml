@@ -4,6 +4,7 @@
 
 <web-app>
     <display-name>Rest Chat</display-name>
+
     <servlet>
         <servlet-name>MainRestServlet</servlet-name>
         <servlet-class>com.teamdev.servlet.RestServlet</servlet-class>
@@ -13,6 +14,11 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+
+    <servlet-mapping>
+        <servlet-name>MainRestServlet</servlet-name>
+        <url-pattern>/chat/*</url-pattern>
+    </servlet-mapping>
 
     <filter>
         <filter-name>AuthFilter</filter-name>
@@ -31,10 +37,5 @@
         <filter-name>LoginFilter</filter-name>
         <url-pattern>/chat/login/*</url-pattern>
     </filter-mapping>
-
-    <servlet-mapping>
-        <servlet-name>MainRestServlet</servlet-name>
-        <url-pattern>/chat/*</url-pattern>
-    </servlet-mapping>
 
 </web-app>

@@ -24,6 +24,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Inject
     private UserAuthenticationService userAuthenticationService;
 
+    @Inject
+    private UserRepository userRepository;
+
     @Override
     public Iterable<ChatRoomDTO> readAllChatRooms(String token) {
         userAuthenticationService.checkUserLogged(token);
@@ -44,6 +47,58 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                     " already exists.");
         }
         chatRoomRepository.save(new ChatRoom(chatRoomName));
+    }
+
+    @Override
+    public void joinChatRoom(String token, long chatRoomId) {
+        final long userId = userAuthenticationService.readCurrentUserId(token);
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+        if (chatRoom == null) {
+            throw new RuntimeException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId) +
+                    " not found.");
+        }
+
+        final User user = userRepository.findOne(userId);
+        if(chatRoom.getUsers().contains(user)){
+            throw new RuntimeException("Error with join chat room. User is already in current chat room.");
+        }
+
+        user.addChatRoom(chatRoom);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void leaveChatRoom(String token, long chatRoomId) {
+        final long userId =userAuthenticationService.readCurrentUserId(token);
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+        if (chatRoom == null) {
+            throw new RuntimeException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId) +
+                    " not found.");
+        }
+
+        final User user = userRepository.findOne(userId);
+        if(!chatRoom.getUsers().contains(user)){
+            throw new RuntimeException("Error with leave chat room. User is not in chat room.");
+        }
+        user.removeChatRoom(chatRoom);
+        userRepository.save(user);
+    }
+
+    @Override
+    public Iterable<UserProfileDTO> readChatRoomUsersList(String token, long chatRoomId) {
+        final long userId = userAuthenticationService.readCurrentUserId(token);
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+        if (chatRoom == null) {
+            throw new RuntimeException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId) +
+                    " not found.");
+        }
+
+        final Set<User> chatRoomUsers = chatRoom.getUsers();
+        final ArrayList<UserProfileDTO> userProfileDTOs = new ArrayList<>();
+        for(User user : chatRoomUsers){
+            userProfileDTOs.add(new UserProfileDTO(user.getId(), user.getLogin(), user.getAge(), user.getBirthday()));
+        }
+        return userProfileDTOs;
     }
 
 }
