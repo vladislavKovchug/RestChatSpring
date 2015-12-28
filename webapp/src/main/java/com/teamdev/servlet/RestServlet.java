@@ -4,6 +4,7 @@ import com.teamdev.chat.ContextConfiguration;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.RegisterUserDTO;
 import com.teamdev.chat.service.ChatRoomService;
+import com.teamdev.chat.service.MessageService;
 import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.service.UserManagementService;
 import org.springframework.context.ApplicationContext;
@@ -52,6 +53,15 @@ public class RestServlet extends HttpServlet {
         final ChatRoomService chatRoomService = applicationContext.getBean(ChatRoomService.class);
         chatRoomService.addChatRoom("chat");
         chatRoomService.addChatRoom("chat 2");
+
+        final UserAuthenticationService userAuthenticationService =
+                applicationContext.getBean(UserAuthenticationService.class);
+
+        final String userToken = userAuthenticationService.login("user1", "12345");
+
+        chatRoomService.joinChatRoom(userToken, 1);
+        final MessageService messageService = applicationContext.getBean(MessageService.class);
+        messageService.sendMessage(userToken, 1, "hello");
 
         System.out.println("database was initialized");
         super.init();
