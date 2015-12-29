@@ -1,12 +1,13 @@
 package com.teamdev.chat.service;
 
+import com.teamdev.chat.dto.TokenDTO;
+
 public interface UserAuthenticationService {
-    String login(String login, String password);
 
-    void checkUserLogged(String token);
+    TokenDTO login(String login, String password);
 
-    long readCurrentUserId(String token);
+    void validateToken(long userId, String token);
 
-    void logout(String token);
+    void logout(long actor, String token);
 
 }

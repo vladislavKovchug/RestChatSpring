@@ -1,6 +1,7 @@
-package com.teamdev.chatimpl.repository;
+package com.teamdev.chat.impl.repository;
 
 
+import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.ChatDatabase;
 import org.springframework.stereotype.Service;
@@ -13,11 +14,11 @@ import java.util.List;
 public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 
     @Inject
-    ChatDatabase chatDatabase;
+    private ChatDatabase chatDatabase;
 
     @Override
     public ChatRoom findOne(long id) {
-        for (ChatRoom entity : chatDatabase.selectChatRooms()) {
+        for (ChatRoom entity : findAll()) {
             if (entity.getId() == id) {
                 return entity;
             }
@@ -32,14 +33,15 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 
     @Override
     public void save(ChatRoom entity) {
+        final List<ChatRoom> chatRooms = findAll();
         if (entity.getId() == -1) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementChatRoomsIndex());
-            chatDatabase.selectChatRooms().add(entity);
+            chatRooms.add(entity);
         } else {
             int index = 0;
-            for (ChatRoom chatRoom : chatDatabase.selectChatRooms()) {
+            for (ChatRoom chatRoom : chatRooms) {
                 if (chatRoom.getId() == entity.getId()) {
-                    chatDatabase.selectChatRooms().set(index, entity);
+                    chatRooms.set(index, entity);
                     break;
                 }
                 index++;
@@ -49,7 +51,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 
     @Override
     public void delete(ChatRoom entity) {
-        chatDatabase.selectChatRooms().remove(entity);
+        findAll().remove(entity);
         entity.removeDependencies();
     }
 

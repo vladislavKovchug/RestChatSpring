@@ -1,12 +1,12 @@
-package com.teamdev.chatimpl.service;
+package com.teamdev.chat.impl.service;
 
 
 import com.teamdev.chat.dto.MessageDTO;
+import com.teamdev.chat.repository.ChatRoomRepository;
+import com.teamdev.chat.repository.MessageRepository;
+import com.teamdev.chat.repository.UserRepository;
 import com.teamdev.chat.service.MessageService;
 import com.teamdev.chat.service.UserAuthenticationService;
-import com.teamdev.chatimpl.repository.ChatRoomRepository;
-import com.teamdev.chatimpl.repository.MessageRepository;
-import com.teamdev.chatimpl.repository.UserRepository;
 import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.entity.Message;
 import com.teamdev.database.entity.User;
@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class MessageServiceImpl implements MessageService {
 
+    public static final int FIVE_MINUTES = 300;
     @Inject
     private ChatRoomRepository chatRoomRepository;
 
@@ -32,30 +34,30 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public Iterable<MessageDTO> readChatRoomMessages(String token, long chatRoomId, long time) {
-        final long userId = userAuthenticationService.readCurrentUserId(token);
+    public Iterable<MessageDTO> readChatRoomMessages(long actor, long chatRoomId, long time, String token) {
+        userAuthenticationService.validateToken(actor, token);
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
         if (chatRoom == null) {
             throw new RuntimeException("Error with getting chat room messages. Chat room with id " +
                     Long.toString(chatRoomId) + " not found.");
         }
 
-        if (time == -1) {
-            time = new Date().getTime() - 300;
+        if (time == -1) { //if time not defined, should select messages for last 5 minutes
+            time = new Date().getTime() - FIVE_MINUTES;
         }
 
-        final Iterable<Message> allUserMessagesAfter = messageRepository.findAllUserMessagesAfter(userId,
+        final List<Message> allUserMessagesAfter = messageRepository.findAllUserMessagesAfter(actor,
                 chatRoomId, new Date(time));
-        final ArrayList<MessageDTO> messageDTOs = new ArrayList<>();
+        final ArrayList<MessageDTO> messageDTOs = new ArrayList<>(allUserMessagesAfter.size());
         for (Message message : allUserMessagesAfter) {
 
             if(message.getUserTo() == null){
-                messageDTOs.add(new MessageDTO(
+                messageDTOs.add(new MessageDTO(message.getId(),
                         message.getUserFrom().getId(), message.getUserFrom().getLogin(),
                         (long)-1, "",
                         message.getMessage(), false, message.getDate()));
             } else {
-                messageDTOs.add(new MessageDTO(
+                messageDTOs.add(new MessageDTO(message.getId(),
                         message.getUserFrom().getId(), message.getUserFrom().getLogin(),
                         message.getUserTo().getId(), message.getUserTo().getLogin(),
                         message.getMessage(), true, message.getDate()));
@@ -65,15 +67,14 @@ public class MessageServiceImpl implements MessageService {
         return messageDTOs;
     }
 
-
     @Override
-    public void sendMessage(String token, long chatRoomId, String messageText) {
-        final long userId = userAuthenticationService.readCurrentUserId(token);
+    public void sendMessage(long actor, long chatRoomId, String messageText, String token) {
+        userAuthenticationService.validateToken(actor, token);
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
         if (chatRoom == null) {
             throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId) + " found.");
         }
-        final User user = userRepository.findOne(userId);
+        final User user = userRepository.findOne(actor);
         if(!chatRoom.getUsers().contains(user)){
             throw new RuntimeException("Error send message to not joined chat room.");
         }
@@ -84,13 +85,13 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendPrivateMessage(String token, long chatRoomId, String messageText, long receiverUserId) {
-        final long userFromId = userAuthenticationService.readCurrentUserId(token);
+    public void sendPrivateMessage(long actor, long chatRoomId, String messageText, long receiverUserId, String token) {
+        userAuthenticationService.validateToken(actor, token);
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
         if (chatRoom == null) {
             throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId) + " found.");
         }
-        final User userFrom = userRepository.findOne(userFromId);
+        final User userFrom = userRepository.findOne(actor);
         if(!chatRoom.getUsers().contains(userFrom)){
             throw new RuntimeException("Error send message to not joined chat room.");
         }
@@ -103,4 +104,5 @@ public class MessageServiceImpl implements MessageService {
         message.setUserTo(userTo);
         messageRepository.save(message);
     }
+
 }

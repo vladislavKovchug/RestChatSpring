@@ -4,10 +4,12 @@ import com.teamdev.chat.dto.*;
 
 public interface ChatRoomService {
 
-    Iterable<ChatRoomDTO> readAllChatRooms(String token);
-    void addChatRoom(String chatRoomName);
-    void deleteChatRoom(String chatRoomName);
-    void joinChatRoom(String token, long chatRoomId);
-    void leaveChatRoom(String token, long chatRoomId);
-    Iterable<UserProfileDTO> readChatRoomUsersList(String token, long chatRoomId);
+    ChatRoomDTO addChatRoom(String chatRoomName);
+    void deleteChatRoomByName(String chatRoomName);
+    void deleteChatRoom(long chatRoomId);
+
+    Iterable<ChatRoomDTO> readAllChatRooms(long actor, String token);
+    void joinChatRoom(long actor, long chatRoomId, String token);
+    void leaveChatRoom(long actor, long chatRoomId, String token);
+    Iterable<UserProfileDTO> readChatRoomUserList(long actor, long chatRoomId, String token);
 }

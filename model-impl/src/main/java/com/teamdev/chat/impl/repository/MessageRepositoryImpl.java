@@ -1,8 +1,8 @@
-package com.teamdev.chatimpl.repository;
+package com.teamdev.chat.impl.repository;
 
 
+import com.teamdev.chat.repository.MessageRepository;
 import com.teamdev.database.ChatDatabase;
-import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.entity.Message;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +15,11 @@ import java.util.List;
 public class MessageRepositoryImpl implements MessageRepository {
 
     @Inject
-    ChatDatabase chatDatabase;
+    private ChatDatabase chatDatabase;
 
     @Override
     public Message findOne(long id) {
-        for (Message entity : chatDatabase.selectMessages()) {
+        for (Message entity : findAll()) {
             if (entity.getId() == id) {
                 return entity;
             }
@@ -34,14 +34,15 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public void save(Message entity) {
+        final List<Message> messages = findAll();
         if (entity.getId() == -1) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementMessagesIndex());
-            chatDatabase.selectMessages().add(entity);
+            messages.add(entity);
         } else {
             int index = 0;
-            for (Message message : chatDatabase.selectMessages()) {
+            for (Message message : messages) {
                 if (message.getId() == entity.getId()) {
-                    chatDatabase.selectMessages().set(index, entity);
+                    messages.set(index, entity);
                     break;
                 }
                 index++;
@@ -51,14 +52,14 @@ public class MessageRepositoryImpl implements MessageRepository {
 
     @Override
     public void delete(Message entity) {
-        chatDatabase.selectMessages().remove(entity);
+        findAll().remove(entity);
         entity.removeDependencies();
     }
 
     @Override
     public List<Message> findAllUserMessagesAfter(long userId, long chatRoom, Date date) {
         final List<Message> allMessages = findAll();
-        final ArrayList<Message> result = new ArrayList<>();
+        final ArrayList<Message> result = new ArrayList<>(allMessages.size());
         for (Message message : allMessages) {
             if (message.getDate().after(date)) {
                 result.add(message);

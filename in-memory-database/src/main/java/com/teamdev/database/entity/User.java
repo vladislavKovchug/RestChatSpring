@@ -9,7 +9,6 @@ public class User {
     private long id;
     private String login;
     private String passwordHash;
-    private long age;
     private Date birthday;
     private Set<ChatRoom> chatRooms = new LinkedHashSet<>();
     private Set<Message> messages = new LinkedHashSet<>();
@@ -18,11 +17,10 @@ public class User {
         this.id = -1;
     }
 
-    public User(String login, String passwordHash, long age, Date birthday) {
+    public User(String login, String passwordHash, Date birthday) {
         this.id = -1;
         this.login = login;
         this.passwordHash = passwordHash;
-        this.age = age;
         this.birthday = birthday;
     }
 
@@ -48,14 +46,6 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
-    }
-
-    public long getAge() {
-        return age;
-    }
-
-    public void setAge(long age) {
-        this.age = age;
     }
 
     public Date getBirthday() {
@@ -116,7 +106,6 @@ public class User {
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (age != user.age) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (passwordHash != null ? !passwordHash.equals(user.passwordHash) : user.passwordHash != null) return false;
         return !(birthday != null ? !birthday.equals(user.birthday) : user.birthday != null);

@@ -1,4 +1,4 @@
-package com.teamdev.chatimpl.repository;
+package com.teamdev.chat.repository;
 
 
 

@@ -1,17 +1,7 @@
 package com.teamdev.chatimpl.test;
 
-import com.teamdev.chat.dto.RegisterUserDTO;
-import com.teamdev.chat.dto.UserProfileDTO;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 public class UserServiceTest extends AbstractTest {
+    /*
     private RegisterUserDTO registerUserDTO = new RegisterUserDTO("not_ivan", "123456", 123, new Date(1700, 10, 10));
     private UserProfileDTO testUser;
     private String testUserToken = "";
@@ -69,5 +59,5 @@ public class UserServiceTest extends AbstractTest {
         assertEquals("Wrong user age.", new Long(registerUserDTO.age), userProfile.age);
         assertEquals("Wrong user birthday.", registerUserDTO.getBirthday(), userProfile.getBirthday());
     }
-
+*/
 }

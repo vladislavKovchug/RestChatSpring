@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public abstract class AbstractTest {
 
     @Configuration
-    @ComponentScan("com.teamdev.chatimpl")
+    @ComponentScan("com.teamdev.chat.impl")
     static class ContextConfiguration {
 
         @Bean
@@ -27,18 +27,18 @@ public abstract class AbstractTest {
     }
 
     @Inject
-    UserAuthenticationService userAuthenticationService;
+    protected UserAuthenticationService userAuthenticationService;
 
     @Inject
-    ChatRoomService chatRoomService;
+    protected ChatRoomService chatRoomService;
 
     @Inject
-    UserManagementService userManagementService;
+    protected UserManagementService userManagementService;
 
     @Inject
-    UserService userService;
+    protected UserService userService;
 
     @Inject
-    MessageService messageService;
+    protected MessageService messageService;
 
 }

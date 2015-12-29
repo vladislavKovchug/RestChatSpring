@@ -1,17 +1,17 @@
-package com.teamdev.chatimpl.service;
+package com.teamdev.chat.impl.service;
 
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.RegisterUserDTO;
+import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.service.UserManagementService;
-import com.teamdev.chatimpl.repository.UserRepository;
+import com.teamdev.chat.repository.UserRepository;
 import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.util.List;
 
 @Service
 public class UserManagementServiceImpl implements UserManagementService {
@@ -20,14 +20,16 @@ public class UserManagementServiceImpl implements UserManagementService {
     private UserRepository userRepository;
 
     @Override
-    public void register(RegisterUserDTO registerUserDTO) {
+    public UserProfileDTO register(RegisterUserDTO registerUserDTO) {
         HashFunction hf = Hashing.sha256();
         String passwordHash = hf.newHasher().putString(registerUserDTO.password, Charsets.UTF_8).hash().toString();
         if (userRepository.findUserByName(registerUserDTO.login) != null) {
             throw new RuntimeException("User " + registerUserDTO.login + " already exists.");
         }
-        userRepository.save(new User(registerUserDTO.login, passwordHash, registerUserDTO.age,
-                registerUserDTO.getBirthday()));
+        final User user = new User(registerUserDTO.login, passwordHash,
+                registerUserDTO.getBirthday());
+        userRepository.save(user);
+        return  new UserProfileDTO(user.getId(), user.getLogin(), user.getBirthday());
     }
 
     @Override

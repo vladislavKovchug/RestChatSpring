@@ -1,5 +1,6 @@
-package com.teamdev.chatimpl.repository;
+package com.teamdev.chat.impl.repository;
 
+import com.teamdev.chat.repository.TokenRepository;
 import com.teamdev.database.ChatDatabase;
 import com.teamdev.database.entity.Token;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,14 @@ import java.util.List;
 public class TokenRepositoryImpl implements TokenRepository {
 
     @Inject
-    ChatDatabase chatDatabase;
+    private ChatDatabase chatDatabase;
 
     @Override
     public Token findByToken(String token) {
         if(token == null){
             return null;
         }
-        for (Token entity : chatDatabase.selectTokens()) {
+        for (Token entity : findAll()) {
             if (token.equals(entity.getToken())) {
                 return entity;
             }
@@ -28,7 +29,7 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public Token findOne(long id) {
-        for (Token entity : chatDatabase.selectTokens()) {
+        for (Token entity : findAll()) {
             if (entity.getId() == id) {
                 return entity;
             }
@@ -43,14 +44,15 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public void save(Token entity) {
+        final List<Token> tokens = findAll();
         if (entity.getId() == -1) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementTokensIndex());
-            chatDatabase.selectTokens().add(entity);
+            tokens.add(entity);
         } else {
             int index = 0;
-            for (Token token : chatDatabase.selectTokens()) {
+            for (Token token : tokens) {
                 if (token.getId() == entity.getId()) {
-                    chatDatabase.selectTokens().set(index, entity);
+                    tokens.set(index, entity);
                     break;
                 }
                 index++;
@@ -60,6 +62,6 @@ public class TokenRepositoryImpl implements TokenRepository {
 
     @Override
     public void delete(Token entity) {
-        chatDatabase.selectTokens().remove(entity);
+        findAll().remove(entity);
     }
 }

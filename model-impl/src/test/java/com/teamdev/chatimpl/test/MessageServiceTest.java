@@ -1,21 +1,8 @@
 package com.teamdev.chatimpl.test;
 
 
-import com.teamdev.chat.dto.ChatRoomDTO;
-import com.teamdev.chat.dto.MessageDTO;
-import com.teamdev.chat.dto.RegisterUserDTO;
-import com.teamdev.chat.dto.UserProfileDTO;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 public class MessageServiceTest extends AbstractTest {
-
+/*
     private RegisterUserDTO registerUserDTO = new RegisterUserDTO("ivan", "123456", 123, new Date(1700, 10, 10));
     private UserProfileDTO testUser;
     private String testUserToken = "";
@@ -142,5 +129,5 @@ public class MessageServiceTest extends AbstractTest {
                     e.getMessage());
         }
     }
-
+*/
 }

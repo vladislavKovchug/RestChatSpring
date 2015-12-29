@@ -1,8 +1,8 @@
-package com.teamdev.chatimpl.repository;
+package com.teamdev.chat.impl.repository;
 
 
+import com.teamdev.chat.repository.UserRepository;
 import com.teamdev.database.ChatDatabase;
-import com.teamdev.database.entity.Message;
 import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class UserRepositoryImpl implements UserRepository {
 
     @Inject
-    ChatDatabase chatDatabase;
+    private ChatDatabase chatDatabase;
 
     @Override
     public User findOne(long id) {

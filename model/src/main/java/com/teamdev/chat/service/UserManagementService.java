@@ -2,10 +2,11 @@ package com.teamdev.chat.service;
 
 
 import com.teamdev.chat.dto.RegisterUserDTO;
+import com.teamdev.chat.dto.UserProfileDTO;
 
 public interface UserManagementService {
 
-    void register(RegisterUserDTO registerUserDTO);
+    UserProfileDTO register(RegisterUserDTO registerUserDTO);
 
     void deleteUser(long userId);
 
