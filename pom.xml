@@ -23,31 +23,4 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <profiles>
-        <profile>
-            <id>disable-integration-test</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-            <modules>
-                <module>integration-test</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>enable-integration-test</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <skipTests>false</skipTests>
-            </properties>
-            <modules>
-                <module>integration-test</module>
-            </modules>
-        </profile>
-    </profiles>
-
 </project>

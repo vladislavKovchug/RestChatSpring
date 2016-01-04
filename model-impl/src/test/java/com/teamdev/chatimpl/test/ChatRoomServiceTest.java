@@ -1,128 +1,98 @@
 package com.teamdev.chatimpl.test;
 
 
+import com.teamdev.chat.dto.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class ChatRoomServiceTest extends AbstractTest {
 
     @Test
-    public void someTest(){
-
-    }
-
-/*
-    private RegisterUserDTO registerUserDTO = new RegisterUserDTO("ivan", "123456", 123, new Date(1700, 10, 10));
-    private UserProfileDTO testUser;
-    private String testUserToken = "";
-
-    private String RegisterAndLoginAsTestUser() {
-        userManagementService.register(registerUserDTO);
-        final String token = userAuthenticationService.login(registerUserDTO.login, registerUserDTO.password);
-        testUser = userService.readCurrentUserProfile(token);
-
-        return token;
-    }
-
-    private ChatRoomDTO readLastChatRoom(String token) {
-        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(token);
-        ChatRoomDTO lastChatRoom = null;
-        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
-            lastChatRoom = chatRoomDTO;
-        }
-        return lastChatRoom;
-    }
-
-    @Before
-    public void before() {
-        testUserToken = RegisterAndLoginAsTestUser();
-    }
-
-    @After
-    public void after() {
-        userManagementService.deleteUser(testUser.id);
-        testUserToken = "";
-    }
-
-    @Test
-    public void TestAddingChatRooms() {
+    public void testAddingChatRooms() {
         chatRoomService.addChatRoom("add_chat_room");
 
-        final ChatRoomDTO lastChatRoom = readLastChatRoom(testUserToken);
+        final ChatRoomDTO lastChatRoom = readLastChatRoom(new UserId(testUser.userId), new TokenDTO(testUser.token));
         if (lastChatRoom == null) {
-            fail("Chat room wasn't added");
+            Assert.fail("Chat room wasn't added");
         }
-        //assertNotEquals("Chat room wasn't added", lastChatRoom, null);
-
-        assertEquals("last added chat room should be test_chat_room", "add_chat_room", lastChatRoom.name);
+        Assert.assertEquals("last added chat room should be test_chat_room", "add_chat_room", lastChatRoom.name);
     }
 
     @Test
-    public void TestFailOnAddingExistingChatRoom() {
+    public void testFailOnAddingExistingChatRoom() {
         try {
             chatRoomService.addChatRoom("existing_chat_room");
             chatRoomService.addChatRoom("existing_chat_room");
-            fail("Exception should be thrown.");
+            Assert.fail("Exception should be thrown.");
         } catch (RuntimeException e) {
-            assertEquals("Not correct Exception message.",
+            Assert.assertEquals("Not correct Exception message.",
                     "Error with create chat room. Chat room with name existing_chat_room already exists.",
                     e.getMessage());
         }
     }
 
     @Test
-    public void TestJoinChatRoom() {
-        chatRoomService.addChatRoom("test_chat_room");
-        final ChatRoomDTO lastChatRoom = readLastChatRoom(testUserToken);
-        chatRoomService.joinChatRoom(testUserToken, lastChatRoom.id);
+    public void testJoinChatRoom() {
+        final ChatRoomDTO testChatRoom = chatRoomService.addChatRoom("join_chat_room");
+        chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id),
+                new TokenDTO(testUser.token));
 
         final Iterable<UserProfileDTO> userProfileDTOs =
-                chatRoomService.readChatRoomUserList(testUserToken, lastChatRoom.id);
+                chatRoomService.readChatRoomUserList(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id),
+                        new TokenDTO(testUser.token));
 
         final UserProfileDTO chatRoomUser = userProfileDTOs.iterator().next();
-        assertEquals("chat room user should be Test user", testUser.id, chatRoomUser.id);
-        assertEquals("chat room user should be Test user", testUser.name, chatRoomUser.name);
-        assertEquals("chat room user should be Test user", testUser.age, chatRoomUser.age);
-        assertEquals("chat room user should be Test user", testUser.getBirthday(), chatRoomUser.getBirthday());
+        Assert.assertEquals("chat room user should be Test user", testUserProfile.id, chatRoomUser.id);
+        Assert.assertEquals("chat room user should be Test user", testUserProfile.name, chatRoomUser.name);
+        Assert.assertEquals("chat room user should be Test user", testUserProfile.getBirthday(), chatRoomUser.getBirthday());
     }
 
     @Test
-    public void TestFailOnJoinNotExistingChatRoom() {
+    public void testFailOnJoinNotExistingChatRoom() {
         try {
-            chatRoomService.joinChatRoom(testUserToken, 666);
-            fail("Exception should be thrown.");
+            chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(-1),
+                    new TokenDTO(testUser.token));
+            Assert.fail("Exception should be thrown.");
         } catch (Exception e) {
-            assertEquals("Not correct Exception message.", "Error with join chat room. Chat room with id 666 not found.",
+            Assert.assertEquals("Not correct Exception message.", "Error with join chat room. Chat room with id -1 not found.",
                     e.getMessage());
         }
     }
 
     @Test
-    public void TestFailOnJoinJoinedChatRoom() {
+    public void testFailOnJoinJoinedChatRoom() {
         try {
-            final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(testUserToken);
-            final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
-            chatRoomService.joinChatRoom(testUserToken, chatRoom.id);
-            chatRoomService.joinChatRoom(testUserToken, chatRoom.id);
-            fail("Exception should be thrown.");
+            final ChatRoomDTO chatRoomDTO = chatRoomService.addChatRoom("joined_chat_room");
+            chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                    new TokenDTO(testUser.token));
+            chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                    new TokenDTO(testUser.token));
+            Assert.fail("Exception should be thrown.");
         } catch (Exception e) {
-            assertEquals("Not correct Exception message.", "Error with join chat room. User is already in current chat room.",
+            Assert.assertEquals("Not correct Exception message.", "Error with join chat room. User is already in current chat room.",
                     e.getMessage());
         }
     }
 
     @Test
     public void TestLeaveChatRoom() {
-        chatRoomService.addChatRoom("leave_chat_room");
-        final ChatRoomDTO lastChatRoom = readLastChatRoom(testUserToken);
-        chatRoomService.joinChatRoom(testUserToken, lastChatRoom.id);
-        chatRoomService.leaveChatRoom(testUserToken, lastChatRoom.id);
+        final ChatRoomDTO chatRoomDTO = chatRoomService.addChatRoom("leave_chat_room");
+        chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                new TokenDTO(testUser.token));
+        chatRoomService.leaveChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                new TokenDTO(testUser.token));
 
         final Iterable<UserProfileDTO> userProfileDTOs =
-                chatRoomService.readChatRoomUserList(testUserToken, lastChatRoom.id);
+                chatRoomService.readChatRoomUserList(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                        new TokenDTO(testUser.token));
 
         for (UserProfileDTO userProfile : userProfileDTOs) {
-            if (userProfile.id == testUser.id) {
-                fail("Found user in leaved chat room.");
+            if (userProfile.id == testUser.userId) {
+                Assert.fail("Found user in leaved chat room.");
             }
         }
     }
@@ -130,10 +100,11 @@ public class ChatRoomServiceTest extends AbstractTest {
     @Test
     public void TestFailOnLeaveNotExistingChatRoom() {
         try {
-            chatRoomService.leaveChatRoom(testUserToken, 666);
-            fail("Exception should be thrown.");
+            chatRoomService.leaveChatRoom(new UserId(testUser.userId), new ChatRoomId(-1),
+                    new TokenDTO(testUser.token));
+            Assert.fail("Exception should be thrown.");
         } catch (Exception e) {
-            assertEquals("Not correct Exception message.", "Error with leave chat room. Chat room with id 666 not found.",
+            Assert.assertEquals("Not correct Exception message.", "Error with leave chat room. Chat room with id -1 not found.",
                     e.getMessage());
         }
     }
@@ -141,16 +112,27 @@ public class ChatRoomServiceTest extends AbstractTest {
     @Test
     public void TestFailOnLeaveLeavedChatRoom() {
         try {
-            final ChatRoomDTO lastChatRoom = readLastChatRoom(testUserToken);
-            chatRoomService.joinChatRoom(testUserToken, lastChatRoom.id);
-            chatRoomService.leaveChatRoom(testUserToken, lastChatRoom.id);
-            chatRoomService.leaveChatRoom(testUserToken, lastChatRoom.id);
-            fail("Exception should be thrown.");
+            final ChatRoomDTO chatRoomDTO = chatRoomService.addChatRoom("leaved_chat_room");
+            chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                    new TokenDTO(testUser.token));
+            chatRoomService.leaveChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                    new TokenDTO(testUser.token));
+            chatRoomService.leaveChatRoom(new UserId(testUser.userId), new ChatRoomId(chatRoomDTO.id),
+                    new TokenDTO(testUser.token));
+            Assert.fail("Exception should be thrown.");
         } catch (Exception e) {
-            assertEquals("Not correct Exception message.", "Error with leave chat room. User is not in chat room.",
+            Assert.assertEquals("Not correct Exception message.", "Error with leave chat room. User is not in chat room.",
                     e.getMessage());
         }
     }
-    */
+
+    private ChatRoomDTO readLastChatRoom(UserId userId, TokenDTO token) {
+        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(userId, token);
+        ChatRoomDTO lastChatRoom = null;
+        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
+            lastChatRoom = chatRoomDTO;
+        }
+        return lastChatRoom;
+    }
 
 }

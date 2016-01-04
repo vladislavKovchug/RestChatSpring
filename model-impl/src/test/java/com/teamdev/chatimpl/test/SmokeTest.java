@@ -16,12 +16,20 @@ public class SmokeTest extends AbstractTest {
     public void smokeTest() {
         final ChatRoomDTO testChat = chatRoomService.addChatRoom("test_chat");
         userManagementService.register(new RegisterUserDTO("login", "password", new Date()));
-        final LoginDTO token = userAuthenticationService.login("login", "password");
-        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(new UserId(token.userId), new TokenDTO(token.token));
-        final ChatRoomDTO firstChat = chatRoomDTOs.iterator().next();
+        final LoginDTO user = userAuthenticationService.login("login", "password");
+        final ChatRoomDTO lastChat = readLastChatRoom(new UserId(user.userId), new TokenDTO(user.token));
 
-        assertEquals("Wrong chatroom id ", testChat.id, firstChat.id);
-        assertEquals("Wrong chatroom name ", testChat.name, firstChat.name);
+        assertEquals("Wrong chatroom id ", testChat.id, lastChat.id);
+        assertEquals("Wrong chatroom name ", testChat.name, lastChat.name);
+    }
+
+    private ChatRoomDTO readLastChatRoom(UserId userId, TokenDTO token) {
+        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(userId, token);
+        ChatRoomDTO lastChatRoom = null;
+        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
+            lastChatRoom = chatRoomDTO;
+        }
+        return lastChatRoom;
     }
 
 }

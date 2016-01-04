@@ -1,50 +1,59 @@
 package com.teamdev.chatimpl.test;
 
+import com.teamdev.chat.dto.*;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Date;
 
 public class UserAuthenticationServiceTest extends AbstractTest {
 
     @Test
-    public void someTest(){
-
-    }
-
-/*
-    @Test
     public void testUserLogin(){
-        userManagementService.register(new RegisterUserDTO("user1", "12345", 12, new Date()));
-        final String token = userAuthenticationService.login("user1", "12345");
-        String passwordHash = "5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5";
+        userManagementService.register(new RegisterUserDTO("user1", "12345", new Date()));
+        final LoginDTO user = userAuthenticationService.login("user1", "12345");
 
-        chatRoomService.readAllChatRooms(token);
+        chatRoomService.readAllChatRooms(new UserId(user.userId), new TokenDTO(user.token));
     }
 
     @Test
     public void testFailsOnUserLoginWithBadCredential() {
         try{
-            final String token = userAuthenticationService.login("admin", "admin");
-            fail("Exception should be thrown.");
+            final LoginDTO user = userAuthenticationService.login("admin", "admin");
+            Assert.fail("Exception should be thrown.");
         } catch (Exception e){
-            assertEquals("Not correct Exception message.", "Access denied.", e.getMessage());
+            Assert.assertEquals("Not correct Exception message.", "Access denied.", e.getMessage());
         }
     }
 
     @Test
-    public void testReadCurrentUserId(){
-        final String token = userAuthenticationService.login("user1", "12345");
-        final long userId = userAuthenticationService.readCurrentUserId(token);
-        final UserProfileDTO userProfileDTO = userService.readUserProfile(token, userId);
-        Assert.assertEquals("Wrong readed userId from token. names should be equals.", "user1",userProfileDTO.name);
+    public void testValidateToken(){
+        userAuthenticationService.validateToken(new UserId(testUser.userId), new TokenDTO(testUser.token));
     }
 
     @Test
-    public void testFailsOnReadCurrentUserIdWithBadToken() {
-        try{
-            userAuthenticationService.readCurrentUserId("1-123-123");
-            fail("Exception should be thrown.");
-        } catch (Exception e){
-            assertEquals("Not correct Exception message.", "Access denied.", e.getMessage());
+    public void testValidateTokenFailsWithIncorrectToken(){
+        try {
+            userAuthenticationService.validateToken(new UserId(testUser.userId), new TokenDTO("incorrect-token"));
+            Assert.fail("Exception should be thrown.");
+        } catch (Exception e) {
+            Assert.assertEquals("Wrong error message", "Access denied.", e.getMessage());
         }
     }
-*/
+
+    @Test
+    public void testUserLogout(){
+        userManagementService.register(new RegisterUserDTO("user2", "12345", new Date()));
+        final LoginDTO user = userAuthenticationService.login("user2", "12345");
+        userAuthenticationService.logout(new UserId(user.userId), new TokenDTO(user.token));
+
+
+        try {
+            userAuthenticationService.validateToken(new UserId(user.userId), new TokenDTO(user.token));
+            Assert.fail("Logged out user is valid.");
+        } catch (Exception e) {
+            Assert.assertEquals("Wrong error message", "Access denied.", e.getMessage());
+        }
+    }
+
 }
