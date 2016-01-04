@@ -8,6 +8,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 
 import javax.inject.Inject;
 
@@ -17,18 +18,16 @@ public class AuthenticationCheckerAspect {
     @Inject
     UserAuthenticationService userAuthenticationService;
 
-    //@Before("execution(* com.mkyong.customer.bo.CustomerBo.addCustomer(..))")
-    @Around("execution(* com.teamdev.chat.service.*.*(com.teamdev.chat.dto.UserId, .., com.teamdev.chat.dto.TokenDTO)) " +
-            "&& !execution(* com.teamdev.chat.service.UserAuthenticationService.validateToken(..))")
-    public Object logBefore(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Pointcut("execution(* com.teamdev.chat.service.*.*(com.teamdev.chat.dto.UserId, .., com.teamdev.chat.dto.TokenDTO))" +
+            "&& !execution(* com.teamdev.chat.service.UserAuthenticationService.validateToken(..))" +
+            "&& args(userId, .., token)) ")
+    public void authenticationPointcut(UserId userId, TokenDTO token){
 
-        System.out.println("just called " + joinPoint.getSignature().getName());
+    }
 
-        final Object[] args = joinPoint.getArgs();
-        final UserId userId = (UserId)args[0];
-        final TokenDTO token = (TokenDTO)args[args.length - 1];
+    @Around("authenticationPointcut(userId, token)")
+    public Object logBefore(ProceedingJoinPoint joinPoint, UserId userId, TokenDTO token) throws Throwable {
         userAuthenticationService.validateToken(userId, token);
-
         return joinPoint.proceed();
     }
 
