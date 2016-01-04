@@ -2,7 +2,9 @@ package com.teamdev.servlet;
 
 import com.google.gson.Gson;
 import com.teamdev.chat.dto.ChatRoomDTO;
+import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.TokenDTO;
+import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.service.ChatRoomService;
 import com.teamdev.chat.service.UserAuthenticationService;
 
@@ -38,11 +40,11 @@ public class RestServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
 
-        if("/login".equals(pathInfo)){
+        if ("/login".equals(pathInfo)) {
             final String login = req.getParameter("login");
             final String password = req.getParameter("pass");
             handleLogin(login, password, writer);
-        } else if ("/chats".equals(pathInfo)){
+        } else if ("/chats".equals(pathInfo)) {
             final String token = req.getParameter("token");
             final String userId = req.getParameter("userid");
             handleChat(userId, token, writer);
@@ -52,16 +54,16 @@ public class RestServlet extends HttpServlet {
 
     }
 
-    private void handleLogin(String login, String password, PrintWriter writer){
+    private void handleLogin(String login, String password, PrintWriter writer) {
         final UserAuthenticationService userAuthenticationService =
                 applicationContextContainer.getApplicationContext().getBean(UserAuthenticationService.class);
-        final TokenDTO token = userAuthenticationService.login(login, password);
+        final LoginDTO token = userAuthenticationService.login(login, password);
 
         final Gson gson = new Gson();
         writer.print(gson.toJson(token));
     }
 
-    private void handleChat(String userId, String token, PrintWriter writer){
+    private void handleChat(String userId, String token, PrintWriter writer) {
         final ChatRoomService chatRoomService =
                 applicationContextContainer.getApplicationContext().getBean(ChatRoomService.class);
         long actor = -1;
@@ -71,7 +73,7 @@ public class RestServlet extends HttpServlet {
 
         }
 
-        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(actor, token);
+        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(new UserId(actor), new TokenDTO(token));
 
         final Gson gson = new Gson();
         writer.write(gson.toJson(chatRoomDTOs));

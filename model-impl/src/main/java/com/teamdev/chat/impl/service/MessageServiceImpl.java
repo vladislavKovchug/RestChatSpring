@@ -1,7 +1,10 @@
 package com.teamdev.chat.impl.service;
 
 
+import com.teamdev.chat.dto.ChatRoomId;
 import com.teamdev.chat.dto.MessageDTO;
+import com.teamdev.chat.dto.TokenDTO;
+import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.chat.repository.MessageRepository;
 import com.teamdev.chat.repository.UserRepository;
@@ -34,20 +37,19 @@ public class MessageServiceImpl implements MessageService {
     private MessageRepository messageRepository;
 
     @Override
-    public Iterable<MessageDTO> readChatRoomMessages(long actor, long chatRoomId, long time, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public Iterable<MessageDTO> readChatRoomMessages(UserId actor, ChatRoomId chatRoomId, long time, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
             throw new RuntimeException("Error with getting chat room messages. Chat room with id " +
-                    Long.toString(chatRoomId) + " not found.");
+                    Long.toString(chatRoomId.id) + " not found.");
         }
 
         if (time == -1) { //if time not defined, should select messages for last 5 minutes
             time = new Date().getTime() - FIVE_MINUTES;
         }
 
-        final List<Message> allUserMessagesAfter = messageRepository.findAllUserMessagesAfter(actor,
-                chatRoomId, new Date(time));
+        final List<Message> allUserMessagesAfter = messageRepository.findAllUserMessagesAfter(actor.id,
+                chatRoomId.id, new Date(time));
         final ArrayList<MessageDTO> messageDTOs = new ArrayList<>(allUserMessagesAfter.size());
         for (Message message : allUserMessagesAfter) {
 
@@ -68,13 +70,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(long actor, long chatRoomId, String messageText, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public void sendMessage(UserId actor, ChatRoomId chatRoomId, String messageText, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId) + " found.");
+            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
         }
-        final User user = userRepository.findOne(actor);
+        final User user = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(user)){
             throw new RuntimeException("Error send message to not joined chat room.");
         }
@@ -85,17 +86,16 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendPrivateMessage(long actor, long chatRoomId, String messageText, long receiverUserId, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public void sendPrivateMessage(UserId actor, ChatRoomId chatRoomId, String messageText, UserId receiverUserId, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId) + " found.");
+            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
         }
-        final User userFrom = userRepository.findOne(actor);
+        final User userFrom = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(userFrom)){
             throw new RuntimeException("Error send message to not joined chat room.");
         }
-        final User userTo = userRepository.findOne(receiverUserId);
+        final User userTo = userRepository.findOne(receiverUserId.id);
         if(!chatRoom.getUsers().contains(userTo)){
             throw new RuntimeException("Error send message to user that not joined chat room.");
         }

@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.RegisterUserDTO;
+import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.service.UserManagementService;
 import com.teamdev.chat.repository.UserRepository;
@@ -33,10 +34,10 @@ public class UserManagementServiceImpl implements UserManagementService {
     }
 
     @Override
-    public void deleteUser(long userId) {
-        final User user = userRepository.findOne(userId);
+    public void deleteUser(UserId userId) {
+        final User user = userRepository.findOne(userId.id);
         if(user == null){
-            throw new RuntimeException("User with id " + Long.toString(userId) + " does not exists.");
+            throw new RuntimeException("User with id " + Long.toString(userId.id) + " does not exists.");
         }
         userRepository.delete(user);
     }

@@ -6,10 +6,10 @@ public interface ChatRoomService {
 
     ChatRoomDTO addChatRoom(String chatRoomName);
     void deleteChatRoomByName(String chatRoomName);
-    void deleteChatRoom(long chatRoomId);
+    void deleteChatRoom(ChatRoomId chatRoomId);
 
-    Iterable<ChatRoomDTO> readAllChatRooms(long actor, String token);
-    void joinChatRoom(long actor, long chatRoomId, String token);
-    void leaveChatRoom(long actor, long chatRoomId, String token);
-    Iterable<UserProfileDTO> readChatRoomUserList(long actor, long chatRoomId, String token);
+    Iterable<ChatRoomDTO> readAllChatRooms(UserId actor, TokenDTO token);
+    void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
+    void leaveChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
+    Iterable<UserProfileDTO> readChatRoomUserList(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
 }

@@ -3,7 +3,9 @@ package com.teamdev.chat.impl.service;
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
+import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.TokenDTO;
+import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.repository.TokenRepository;
 import com.teamdev.chat.repository.UserRepository;
@@ -29,7 +31,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     private TokenRepository tokenRepository;
 
     @Override
-    public TokenDTO login(String login, String password) {
+    public LoginDTO login(String login, String password) {
         HashFunction hf = Hashing.sha256();
         final String passwordHash = hf.newHasher().putString(password, Charsets.UTF_8).hash().toString();
         final List<User> users = userRepository.findAll();
@@ -41,15 +43,15 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                 tokenRepository.save(new Token(token, user.getId(), //token should expire from 15 minutes
                         new Date(System.currentTimeMillis() + FIFTEEN_MINUTES)));
 
-                return new TokenDTO(user.getId(), token);
+                return new LoginDTO(user.getId(), token);
             }
         }
         throw new AccessControlException("Access denied.");
     }
 
     @Override
-    public void validateToken(long userId, String token) {
-        final Token userToken = tokenRepository.findByToken(token);
+    public void validateToken(UserId userId, TokenDTO token) {
+        final Token userToken = tokenRepository.findByToken(token.token);
         if(userToken == null){
             throw new AccessControlException("Access denied.");
         }
@@ -59,15 +61,14 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             throw new AccessControlException("Access denied.");
         }
 
-        if(userToken.getUserId() != userId){
+        if(userToken.getUserId() != userId.id){
             throw new AccessControlException("Access denied.");
         }
     }
 
     @Override
-    public void logout(long actor, String token) {
-        validateToken(actor, token);
-        final Token userToken = tokenRepository.findByToken(token);
+    public void logout(UserId actor, TokenDTO token) {
+        final Token userToken = tokenRepository.findByToken(token.token);
         tokenRepository.delete(userToken);
     }
 

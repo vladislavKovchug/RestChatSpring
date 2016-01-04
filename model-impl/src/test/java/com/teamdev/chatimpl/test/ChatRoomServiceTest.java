@@ -1,7 +1,15 @@
 package com.teamdev.chatimpl.test;
 
 
+import org.junit.Test;
+
 public class ChatRoomServiceTest extends AbstractTest {
+
+    @Test
+    public void someTest(){
+
+    }
+
 /*
     private RegisterUserDTO registerUserDTO = new RegisterUserDTO("ivan", "123456", 123, new Date(1700, 10, 10));
     private UserProfileDTO testUser;

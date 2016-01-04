@@ -1,8 +1,7 @@
 package com.teamdev.servlet;
 
 
-import com.teamdev.chat.dto.RegisterUserDTO;
-import com.teamdev.chat.dto.TokenDTO;
+import com.teamdev.chat.dto.*;
 import com.teamdev.chat.service.ChatRoomService;
 import com.teamdev.chat.service.MessageService;
 import com.teamdev.chat.service.UserAuthenticationService;
@@ -21,18 +20,18 @@ public class SampleDataCreator {
 
         final ChatRoomService chatRoomService =
                 applicationContext.getBean(ChatRoomService.class);
-        chatRoomService.addChatRoom("chat");
-        chatRoomService.addChatRoom("chat 2");
+        final ChatRoomDTO chat1 = chatRoomService.addChatRoom("chat");
+        final ChatRoomDTO chat2 = chatRoomService.addChatRoom("chat 2");
 
         final UserAuthenticationService userAuthenticationService =
                 applicationContext.getBean(UserAuthenticationService.class);
 
-        final TokenDTO userToken = userAuthenticationService.login("user1", "12345");
+        final LoginDTO userToken = userAuthenticationService.login("user1", "12345");
 
-        chatRoomService.joinChatRoom(userToken.userId, 1, userToken.token);
+        chatRoomService.joinChatRoom(new UserId(userToken.userId), new ChatRoomId(chat1.id), new TokenDTO(userToken.token));
         final MessageService messageService =
                 applicationContext.getBean(MessageService.class);
-        messageService.sendMessage(userToken.userId, 1, "hello", userToken.token);
+        messageService.sendMessage(new UserId(userToken.userId), new ChatRoomId(chat1.id), "hello", new TokenDTO(userToken.token));
     }
 
 }

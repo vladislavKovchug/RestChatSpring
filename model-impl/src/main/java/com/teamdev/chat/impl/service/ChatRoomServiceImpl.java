@@ -1,7 +1,6 @@
 package com.teamdev.chat.impl.service;
 
-import com.teamdev.chat.dto.ChatRoomDTO;
-import com.teamdev.chat.dto.UserProfileDTO;
+import com.teamdev.chat.dto.*;
 import com.teamdev.chat.service.ChatRoomService;
 import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.repository.ChatRoomRepository;
@@ -28,8 +27,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private UserRepository userRepository;
 
     @Override
-    public Iterable<ChatRoomDTO> readAllChatRooms(long actor, String token) {
-        userAuthenticationService.validateToken(actor, token);
+    public Iterable<ChatRoomDTO> readAllChatRooms(UserId actor, TokenDTO token) {
         final List<ChatRoom> chatRooms = chatRoomRepository.findAll();
         List<ChatRoomDTO> result = new ArrayList<>(chatRooms.size());
         for (ChatRoom chatRoom : chatRooms){
@@ -60,24 +58,23 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void deleteChatRoom(long chatRoomId) {
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public void deleteChatRoom(ChatRoomId chatRoomId) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if(chatRoom == null){
-            throw new RuntimeException("Error delete not existed chat room with id " + Long.toString(chatRoomId));
+            throw new RuntimeException("Error delete not existed chat room with id " + Long.toString(chatRoomId.id));
         }
         chatRoomRepository.delete(chatRoom);
     }
 
     @Override
-    public void joinChatRoom(long actor, long chatRoomId, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId) +
+            throw new RuntimeException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
-        final User user = userRepository.findOne(actor);
+        final User user = userRepository.findOne(actor.id);
         if(chatRoom.getUsers().contains(user)){
             throw new RuntimeException("Error with join chat room. User is already in current chat room.");
         }
@@ -87,15 +84,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void leaveChatRoom(long actor, long chatRoomId, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public void leaveChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId) +
+            throw new RuntimeException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
-        final User user = userRepository.findOne(actor);
+        final User user = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(user)){
             throw new RuntimeException("Error with leave chat room. User is not in chat room.");
         }
@@ -104,11 +100,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public Iterable<UserProfileDTO> readChatRoomUserList(long actor, long chatRoomId, String token) {
-        userAuthenticationService.validateToken(actor, token);
-        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId);
+    public Iterable<UserProfileDTO> readChatRoomUserList(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
+        final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId) +
+            throw new RuntimeException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 

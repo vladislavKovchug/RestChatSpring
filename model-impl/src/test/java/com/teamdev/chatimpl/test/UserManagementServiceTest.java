@@ -1,7 +1,15 @@
 package com.teamdev.chatimpl.test;
 
 
+import org.junit.Test;
+
 public class UserManagementServiceTest extends AbstractTest {
+
+    @Test
+    public void someTest(){
+
+    }
+
 /*
     @Test
     public void testUserRegister(){

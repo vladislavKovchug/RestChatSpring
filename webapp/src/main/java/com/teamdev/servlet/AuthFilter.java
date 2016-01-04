@@ -1,6 +1,8 @@
 package com.teamdev.servlet;
 
 
+import com.teamdev.chat.dto.TokenDTO;
+import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.service.UserAuthenticationService;
 
 import javax.servlet.*;
@@ -27,11 +29,10 @@ public class AuthFilter implements Filter{
         try {
             userId = Long.parseLong(servletRequest.getParameter("userid"));
         } catch (NumberFormatException e) {
-            e.printStackTrace();
         }
 
         try{
-            userAuthenticationService.validateToken(userId, token);
+            userAuthenticationService.validateToken(new UserId(userId), new TokenDTO(token));
         } catch (AccessControlException e){
             response.sendError(403, "Forbidden");
             return;
