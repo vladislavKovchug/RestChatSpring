@@ -28,7 +28,7 @@ public class AuthFilter implements Filter{
         long userId = -1;
         try {
             userId = Long.parseLong(servletRequest.getParameter("userid"));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
         }
 
         try{

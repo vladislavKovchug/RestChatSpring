@@ -69,7 +69,7 @@ public class RestServlet extends HttpServlet {
         long actor = -1;
         try {
             actor = Long.parseLong(userId);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ignored) {
 
         }
 
