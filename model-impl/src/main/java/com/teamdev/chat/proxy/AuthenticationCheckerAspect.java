@@ -26,7 +26,7 @@ public class AuthenticationCheckerAspect {
     }
 
     @Around(value = "authenticationPointcut(userId, token)", argNames = "joinPoint,userId,token")
-    public Object logBefore(ProceedingJoinPoint joinPoint, UserId userId, TokenDTO token) throws Throwable {
+    public Object checkIsTokenValid(ProceedingJoinPoint joinPoint, UserId userId, TokenDTO token) throws Throwable {
         userAuthenticationService.validateToken(userId, token);
         return joinPoint.proceed();
     }
