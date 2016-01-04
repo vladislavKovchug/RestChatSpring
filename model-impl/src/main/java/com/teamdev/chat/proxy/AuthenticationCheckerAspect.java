@@ -18,14 +18,14 @@ public class AuthenticationCheckerAspect {
     @Inject
     UserAuthenticationService userAuthenticationService;
 
-    @Pointcut("execution(* com.teamdev.chat.service.*.*(com.teamdev.chat.dto.UserId, .., com.teamdev.chat.dto.TokenDTO))" +
+    @Pointcut(value = "execution(* com.teamdev.chat.service.*.*(com.teamdev.chat.dto.UserId, .., com.teamdev.chat.dto.TokenDTO))" +
             "&& !execution(* com.teamdev.chat.service.UserAuthenticationService.validateToken(..))" +
-            "&& args(userId, .., token)) ")
+            "&& args(userId, .., token)) ", argNames = "userId,token")
     public void authenticationPointcut(UserId userId, TokenDTO token){
 
     }
 
-    @Around("authenticationPointcut(userId, token)")
+    @Around(value = "authenticationPointcut(userId, token)", argNames = "joinPoint,userId,token")
     public Object logBefore(ProceedingJoinPoint joinPoint, UserId userId, TokenDTO token) throws Throwable {
         userAuthenticationService.validateToken(userId, token);
         return joinPoint.proceed();
