@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class User {
+public class User implements DatabaseEntity {
     private Long id;
     private String login;
     private String passwordHash;
@@ -23,10 +23,12 @@ public class User {
         this.birthday = birthday;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -88,6 +90,7 @@ public class User {
         }
     }
 
+    @Override
     public void removeDependencies() {
         for (Message message : new LinkedHashSet<>(messages)) {
             message.setUserTo(null);
@@ -104,7 +107,7 @@ public class User {
 
         User user = (User) o;
 
-        if (id != user.id) return false;
+        if (id != null ? !id.equals(user.id) : user.id != null) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (passwordHash != null ? !passwordHash.equals(user.passwordHash) : user.passwordHash != null) return false;
         return !(birthday != null ? !birthday.equals(user.birthday) : user.birthday != null);
@@ -113,6 +116,7 @@ public class User {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
     }
+
 }

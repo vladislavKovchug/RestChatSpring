@@ -3,7 +3,7 @@ package com.teamdev.database.entity;
 
 import java.util.Date;
 
-public class Token {
+public class Token implements DatabaseEntity {
     private Long id;
     private String token;
     private long userId;
@@ -19,10 +19,12 @@ public class Token {
         this.expireTime = expireTime;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -52,23 +54,26 @@ public class Token {
     }
 
     @Override
+    public void removeDependencies() {
+
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Token)) return false;
 
         Token token1 = (Token) o;
 
         if (userId != token1.userId) return false;
-        if (!token.equals(token1.token)) return false;
-        return expireTime.equals(token1.expireTime);
+        if (id != null ? !id.equals(token1.id) : token1.id != null) return false;
+        if (token != null ? !token.equals(token1.token) : token1.token != null) return false;
+        return !(expireTime != null ? !expireTime.equals(token1.expireTime) : token1.expireTime != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = token.hashCode();
-        result = 31 * result + (int) (userId ^ (userId >>> 32));
-        result = 31 * result + expireTime.hashCode();
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 }

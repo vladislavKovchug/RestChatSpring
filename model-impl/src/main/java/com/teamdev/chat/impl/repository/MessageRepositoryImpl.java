@@ -3,6 +3,7 @@ package com.teamdev.chat.impl.repository;
 
 import com.teamdev.chat.repository.MessageRepository;
 import com.teamdev.database.ChatDatabase;
+import com.teamdev.database.Tables;
 import com.teamdev.database.entity.Message;
 import org.springframework.stereotype.Service;
 
@@ -12,48 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class MessageRepositoryImpl implements MessageRepository {
-
-    @Inject
-    private ChatDatabase chatDatabase;
+public class MessageRepositoryImpl extends AbstractRepository<Message> implements MessageRepository {
 
     @Override
-    public Message findOne(long id) {
-        for (Message entity : findAll()) {
-            if (entity.getId() == id) {
-                return entity;
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public List<Message> findAll() {
-        return chatDatabase.selectMessages();
-    }
-
-    @Override
-    public void save(Message entity) {
-        final List<Message> messages = findAll();
-        if (entity.getId() == null) { //if id not defined insert, else update
-            entity.setId(chatDatabase.incrementMessagesIndex());
-            messages.add(entity);
-        } else {
-            int index = 0;
-            for (Message message : messages) {
-                if (message.getId() == entity.getId()) {
-                    messages.set(index, entity);
-                    break;
-                }
-                index++;
-            }
-        }
-    }
-
-    @Override
-    public void delete(Message entity) {
-        findAll().remove(entity);
-        entity.removeDependencies();
+    protected Tables getTable() {
+        return Tables.MESSAGES_TABLE;
     }
 
     @Override

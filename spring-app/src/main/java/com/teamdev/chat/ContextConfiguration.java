@@ -2,6 +2,7 @@ package com.teamdev.chat;
 
 import com.teamdev.chat.proxy.AuthenticationCheckerAspect;
 import com.teamdev.database.ChatDatabase;
+import com.teamdev.database.Tables;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +18,12 @@ public class ContextConfiguration {
 
     @Bean
     public ChatDatabase chatDatabase(){
-        return new ChatDatabase();
+        final ChatDatabase chatDatabase = new ChatDatabase();
+        chatDatabase.createTable(Tables.USERS_TABLE);
+        chatDatabase.createTable(Tables.TOKENS_TABLE);
+        chatDatabase.createTable(Tables.MESSAGES_TABLE);
+        chatDatabase.createTable(Tables.CHAT_ROOMS_TABLE);
+        return chatDatabase;
     }
 
     @Bean AuthenticationCheckerAspect authenticationCheckerAspect(){

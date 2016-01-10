@@ -1,72 +1,66 @@
 package com.teamdev.database;
 
-import com.teamdev.database.entity.ChatRoom;
-import com.teamdev.database.entity.Message;
-import com.teamdev.database.entity.Token;
-import com.teamdev.database.entity.User;
+import com.teamdev.database.entity.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class ChatDatabase {
 
 
-    private static List<User> users = new ArrayList<>();
-    private static List<ChatRoom> chatRooms = new ArrayList<>();
-    private static List<Message> messages = new ArrayList<>();
-    private static List<Token> tokens = new ArrayList<>();
+    private static Map<Tables, Map<Long, DatabaseEntity>> database = new HashMap<>();
+    private static Map<Tables, AtomicLong> databaseIndex = new HashMap<>();
 
-    private static long usersIndex = 0;
-    private static long chatRoomsIndex = 0;
-    private static long messagesIndex = 0;
-    private static long tokensIndex = 0;
-
-    public List<User> selectUsers() {
-        return users;
+    public Map<Long, DatabaseEntity> selectTable(Tables table) {
+        if(database.containsKey(table)){
+            return database.get(table);
+        }
+        throw new RuntimeException("Error on SELECT. No table with name=" + table + ".");
     }
 
-    public List<ChatRoom> selectChatRooms() {
-        return chatRooms;
+    public void insertIntoTable(Tables table, DatabaseEntity line){
+
+        if(database.containsKey(table) && databaseIndex.containsKey(table)){
+            Long index = databaseIndex.get(table).incrementAndGet();
+            line.setId(index);
+            database.get(table).put(index, line);
+        }
     }
 
-    public List<Message> selectMessages() {
-        return messages;
+    public void updateInTable(Tables table, DatabaseEntity line, Long id){
+        int index = 0;
+        if(!database.containsKey(table)){
+            throw new RuntimeException("Error on UPDATE. No table with name=" + table + " was found.");
+        }
+
+        if(database.get(table).get(id) == null){
+            throw new RuntimeException("Error on UPDATE. No entity with id=" + id + " was found.");
+        }
+
+        database.get(table).put(id, line);
     }
 
-    public List<Token> selectTokens() {
-        return tokens;
+    public void deleteFromTable(Tables table, Long id){
+        if(!database.containsKey(table)){
+            throw new RuntimeException("Error on DELETE. No table with name=" + table + " was found.");
+        }
+
+        if(database.get(table).get(id) == null){
+            throw new RuntimeException("Error on DELETE. No entity with id=" + id + " was found.");
+        }
+
+        database.get(table).remove(id);
     }
 
-    public long getUsersIndex() {
-        return usersIndex;
-    }
-
-    public long incrementUsersIndex() {
-        return ++usersIndex;
-    }
-
-    public long getChatRoomsIndex() {
-        return chatRoomsIndex;
-    }
-
-    public long incrementChatRoomsIndex() {
-        return ++chatRoomsIndex;
-    }
-
-    public long getMessagesIndex() {
-        return messagesIndex;
-    }
-
-    public long incrementMessagesIndex() {
-        return ++messagesIndex;
-    }
-
-    public long getTokensIndex() {
-        return tokensIndex;
-    }
-
-    public long incrementTokensIndex() {
-        return ++tokensIndex;
+    public void createTable(Tables table) {
+        if(database.containsKey(table)){
+            throw new RuntimeException("Table " + table.name() + "already exists");
+        }
+        database.put(table, new HashMap<>());
+        databaseIndex.put(table, new AtomicLong());
     }
 
 }

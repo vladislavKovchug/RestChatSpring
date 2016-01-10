@@ -4,7 +4,7 @@ package com.teamdev.database.entity;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class ChatRoom {
+public class ChatRoom implements DatabaseEntity {
     private Long id;
     private String name;
     private Set<User> users = new LinkedHashSet<>();
@@ -18,10 +18,12 @@ public class ChatRoom {
         this.name = name;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -66,6 +68,7 @@ public class ChatRoom {
         }
     }
 
+    @Override
     public void removeDependencies() {
         for (Message message : new LinkedHashSet<>(messages)) {
             message.setUserTo(null);
@@ -82,14 +85,13 @@ public class ChatRoom {
 
         ChatRoom chatRoom = (ChatRoom) o;
 
-        if (id != chatRoom.id) return false;
+        if (id != null ? !id.equals(chatRoom.id) : chatRoom.id != null) return false;
         return !(name != null ? !name.equals(chatRoom.name) : chatRoom.name != null);
 
     }
 
-
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
     }
 }

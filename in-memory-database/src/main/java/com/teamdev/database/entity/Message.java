@@ -3,7 +3,7 @@ package com.teamdev.database.entity;
 
 import java.util.Date;
 
-public class Message {
+public class Message implements DatabaseEntity {
     private Long id;
     private User userFrom;
     private User userTo;
@@ -21,10 +21,12 @@ public class Message {
         this.message = message;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -47,6 +49,7 @@ public class Message {
         }
     }
 
+    @Override
     public void removeDependencies() {
         if (chatRoom != null) {
             chatRoom.removeMessage(this);
@@ -89,11 +92,14 @@ public class Message {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Message)) return false;
 
         Message message1 = (Message) o;
 
-        if (id != message1.id) return false;
+        if (id != null ? !id.equals(message1.id) : message1.id != null) return false;
+        if (userFrom != null ? !userFrom.equals(message1.userFrom) : message1.userFrom != null) return false;
+        if (userTo != null ? !userTo.equals(message1.userTo) : message1.userTo != null) return false;
+        if (chatRoom != null ? !chatRoom.equals(message1.chatRoom) : message1.chatRoom != null) return false;
         if (date != null ? !date.equals(message1.date) : message1.date != null) return false;
         return !(message != null ? !message.equals(message1.message) : message1.message != null);
 
@@ -101,6 +107,6 @@ public class Message {
 
     @Override
     public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+        return id != null ? id.hashCode() : 0;
     }
 }

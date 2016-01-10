@@ -4,6 +4,7 @@ import com.teamdev.chat.dto.*;
 import com.teamdev.chat.proxy.AuthenticationCheckerAspect;
 import com.teamdev.chat.service.*;
 import com.teamdev.database.ChatDatabase;
+import com.teamdev.database.Tables;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -29,7 +30,12 @@ public abstract class AbstractTest {
 
         @Bean
         public ChatDatabase chatDatabase(){
-            return new ChatDatabase();
+            final ChatDatabase chatDatabase = new ChatDatabase();
+            chatDatabase.createTable(Tables.USERS_TABLE);
+            chatDatabase.createTable(Tables.TOKENS_TABLE);
+            chatDatabase.createTable(Tables.MESSAGES_TABLE);
+            chatDatabase.createTable(Tables.CHAT_ROOMS_TABLE);
+            return chatDatabase;
         }
 
         @Bean
