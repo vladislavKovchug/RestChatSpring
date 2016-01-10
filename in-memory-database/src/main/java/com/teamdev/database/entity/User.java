@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class User {
-    private long id;
+    private Long id;
     private String login;
     private String passwordHash;
     private Date birthday;
@@ -14,21 +14,20 @@ public class User {
     private Set<Message> messages = new LinkedHashSet<>();
 
     public User() {
-        this.id = -1;
+
     }
 
     public User(String login, String passwordHash, Date birthday) {
-        this.id = -1;
         this.login = login;
         this.passwordHash = passwordHash;
         this.birthday = birthday;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

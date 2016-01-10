@@ -5,25 +5,24 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class ChatRoom {
-    private long id;
+    private Long id;
     private String name;
     private Set<User> users = new LinkedHashSet<>();
     private Set<Message> messages = new LinkedHashSet<>();
 
     public ChatRoom() {
-        this.id = -1;
+
     }
 
     public ChatRoom(String name) {
-        this.id = -1;
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -32,7 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public void save(User entity) {
-        if (entity.getId() == -1) { //if id not defined insert, else update
+        if (entity.getId() == null) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementUsersIndex());
             chatDatabase.selectUsers().add(entity);
         } else {

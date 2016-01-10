@@ -45,7 +45,7 @@ public class TokenRepositoryImpl implements TokenRepository {
     @Override
     public void save(Token entity) {
         final List<Token> tokens = findAll();
-        if (entity.getId() == -1) { //if id not defined insert, else update
+        if (entity.getId() == null) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementTokensIndex());
             tokens.add(entity);
         } else {

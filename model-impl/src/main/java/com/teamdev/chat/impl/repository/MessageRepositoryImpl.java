@@ -35,7 +35,7 @@ public class MessageRepositoryImpl implements MessageRepository {
     @Override
     public void save(Message entity) {
         final List<Message> messages = findAll();
-        if (entity.getId() == -1) { //if id not defined insert, else update
+        if (entity.getId() == null) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementMessagesIndex());
             messages.add(entity);
         } else {

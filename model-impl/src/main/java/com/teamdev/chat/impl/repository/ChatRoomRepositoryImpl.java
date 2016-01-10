@@ -34,7 +34,7 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
     @Override
     public void save(ChatRoom entity) {
         final List<ChatRoom> chatRooms = findAll();
-        if (entity.getId() == -1) { //if id not defined insert, else update
+        if (entity.getId() == null) { //if id not defined insert, else update
             entity.setId(chatDatabase.incrementChatRoomsIndex());
             chatRooms.add(entity);
         } else {

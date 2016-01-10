@@ -4,7 +4,7 @@ package com.teamdev.database.entity;
 import java.util.Date;
 
 public class Message {
-    private long id;
+    private Long id;
     private User userFrom;
     private User userTo;
     private ChatRoom chatRoom;
@@ -12,21 +12,20 @@ public class Message {
     private String message;
 
     public Message() {
-        this.id = -1;
+
     }
 
     public Message(User userFrom, Date date, String message) {
-        this.id = -1;
         this.userFrom = userFrom;
         this.date = date;
         this.message = message;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

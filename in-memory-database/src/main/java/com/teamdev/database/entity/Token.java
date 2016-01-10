@@ -4,27 +4,26 @@ package com.teamdev.database.entity;
 import java.util.Date;
 
 public class Token {
-    private long id;
+    private Long id;
     private String token;
     private long userId;
     private Date expireTime;
 
     public Token() {
-        this.id = -1;
+
     }
 
     public Token(String token, long userId, Date expireTime) {
-        this.id = -1;
         this.token = token;
         this.userId = userId;
         this.expireTime = expireTime;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
