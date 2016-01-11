@@ -6,28 +6,26 @@
     <display-name>Rest Chat</display-name>
 
     <servlet>
-        <servlet-name>MainRestServlet</servlet-name>
-        <servlet-class>com.teamdev.servlet.RestServlet</servlet-class>
+        <servlet-name>MainServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
-            <param-name>javax.ws.rs.Application</param-name>
-            <param-value>com.teamdev.webapp.ChatApplication</param-value>
+            <param-name>contextClass</param-name>
+            <param-value>
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>com.teamdev.chat.ContextConfiguration</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
+
+
     <servlet-mapping>
-        <servlet-name>MainRestServlet</servlet-name>
+        <servlet-name>MainServlet</servlet-name>
         <url-pattern>/chat/*</url-pattern>
     </servlet-mapping>
-
-    <filter>
-        <filter-name>AuthFilter</filter-name>
-        <filter-class>com.teamdev.servlet.AuthFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>AuthFilter</filter-name>
-        <url-pattern>/chat/chats/*</url-pattern>
-    </filter-mapping>
 
 </web-app>

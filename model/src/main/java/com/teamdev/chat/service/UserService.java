@@ -9,8 +9,6 @@ public interface UserService {
 
     UserProfileDTO readUserProfile(UserId actor, UserId userId, TokenDTO token);
 
-    UserProfileDTO readCurrentUserProfile(UserId actor, TokenDTO token);
-
     Iterable<UserProfileDTO> readAllUsersProfile(UserId actor, TokenDTO token);
 
 }

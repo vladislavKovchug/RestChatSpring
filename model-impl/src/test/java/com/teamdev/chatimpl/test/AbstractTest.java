@@ -82,7 +82,7 @@ public abstract class AbstractTest {
     private LoginDTO registerAndLoginAsTestUser() {
         userManagementService.register(registerUserDTO);
         final LoginDTO token = userAuthenticationService.login(registerUserDTO.login, registerUserDTO.password);
-        testUserProfile = userService.readCurrentUserProfile(new UserId(token.userId), new TokenDTO(token.token));
+        testUserProfile = userService.readUserProfile(new UserId(token.userId), new UserId(token.userId), new TokenDTO(token.token));
 
         return token;
     }

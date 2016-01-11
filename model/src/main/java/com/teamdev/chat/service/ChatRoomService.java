@@ -5,7 +5,6 @@ import com.teamdev.chat.dto.*;
 public interface ChatRoomService {
 
     ChatRoomDTO addChatRoom(String chatRoomName);
-    void deleteChatRoomByName(String chatRoomName);
     void deleteChatRoom(ChatRoomId chatRoomId);
 
     Iterable<ChatRoomDTO> readAllChatRooms(UserId actor, TokenDTO token);

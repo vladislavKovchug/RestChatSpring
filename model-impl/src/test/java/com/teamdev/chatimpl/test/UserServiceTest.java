@@ -31,13 +31,4 @@ public class UserServiceTest extends AbstractTest {
         }
     }
 
-    @Test
-    public void testReadCurrentUserProfile(){
-        final UserProfileDTO userProfile = userService.readCurrentUserProfile(new UserId(testUser.userId), new TokenDTO(testUser.token));
-
-        Assert.assertEquals("Wrong user id.", testUserProfile.id, userProfile.id);
-        Assert.assertEquals("Wrong user name.", testUserProfile.name, userProfile.name);
-        Assert.assertEquals("Wrong user birthday.", testUserProfile.getBirthday(), userProfile.getBirthday());
-    }
-
 }

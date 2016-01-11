@@ -14,7 +14,8 @@ public class UserManagementServiceTest extends AbstractTest {
         final RegisterUserDTO newUser = new RegisterUserDTO("new_user", "12345", new Date(1900, 10, 11));
         userManagementService.register(newUser);
         final LoginDTO user = userAuthenticationService.login(newUser.login, newUser.password);
-        final UserProfileDTO userProfile = userService.readCurrentUserProfile(new UserId(user.userId), new TokenDTO(user.token));
+        final UserProfileDTO userProfile = userService.readUserProfile(new UserId(user.userId), new UserId(user.userId),
+                new TokenDTO(user.token));
 
         Assert.assertEquals("User name changed after register.", newUser.login, userProfile.name);
         Assert.assertEquals("User birthday changed after register.", newUser.getBirthday(), userProfile.getBirthday());

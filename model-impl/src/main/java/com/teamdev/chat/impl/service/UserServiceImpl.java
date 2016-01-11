@@ -17,10 +17,6 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-
-    @Inject
-    private UserAuthenticationService userAuthenticationService;
-
     @Inject
     private UserRepository userRepository;
 
@@ -31,12 +27,6 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("No user found with id " + Long.toString(userId.id) + ".");
         }
 
-        return new UserProfileDTO(user.getId(), user.getLogin(), user.getBirthday());
-    }
-
-    @Override
-    public UserProfileDTO readCurrentUserProfile(UserId actor, TokenDTO token) {
-        final User user = userRepository.findOne(actor.id);
         return new UserProfileDTO(user.getId(), user.getLogin(), user.getBirthday());
     }
 

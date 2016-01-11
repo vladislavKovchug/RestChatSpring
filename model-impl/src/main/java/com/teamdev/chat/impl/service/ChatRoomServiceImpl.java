@@ -49,15 +49,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void deleteChatRoomByName(String chatRoomName) {
-        final ChatRoom chatRoom = chatRoomRepository.findChatRoomByName(chatRoomName);
-        if(chatRoom == null){
-            throw new RuntimeException("Error delete not existed chat room with name " + chatRoomName);
-        }
-        chatRoomRepository.delete(chatRoom);
-    }
-
-    @Override
     public void deleteChatRoom(ChatRoomId chatRoomId) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if(chatRoom == null){

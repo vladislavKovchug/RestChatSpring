@@ -54,7 +54,7 @@ public class MessageServiceTest extends AbstractTest {
     public void testPostingPrivateMessage(){
         userManagementService.register(new RegisterUserDTO("ivan2", "1", new Date()));
         final LoginDTO ivan2 = userAuthenticationService.login("ivan2", "1");
-        UserProfileDTO receiverUser = userService.readCurrentUserProfile(new UserId(ivan2.userId),
+        UserProfileDTO receiverUser = userService.readUserProfile(new UserId(ivan2.userId), new UserId(ivan2.userId),
                 new TokenDTO(ivan2.token));
 
 

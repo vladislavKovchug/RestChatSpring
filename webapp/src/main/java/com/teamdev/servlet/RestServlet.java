@@ -1,6 +1,7 @@
 package com.teamdev.servlet;
 
 import com.google.gson.Gson;
+import com.teamdev.chat.SampleDataCreator;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.TokenDTO;
@@ -24,8 +25,8 @@ public class RestServlet extends HttpServlet {
     public void init() throws ServletException {
         applicationContextContainer.init();
 
-        SampleDataCreator sampleDataCreator = new SampleDataCreator();
-        sampleDataCreator.createSampleData(applicationContextContainer.getApplicationContext());
+        /*SampleDataCreator sampleDataCreator = new SampleDataCreator();
+        sampleDataCreator.createSampleData(applicationContextContainer.getApplicationContext());*/
 
         System.out.println("database was initialized");
         super.init();

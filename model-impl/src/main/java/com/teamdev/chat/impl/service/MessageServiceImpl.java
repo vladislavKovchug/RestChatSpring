@@ -70,7 +70,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void sendMessage(UserId actor, ChatRoomId chatRoomId, String messageText, TokenDTO token) {
+    public MessageDTO sendMessage(UserId actor, ChatRoomId chatRoomId, String messageText, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
             throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
@@ -83,10 +83,14 @@ public class MessageServiceImpl implements MessageService {
         final Message message = new Message(user, new Date(), messageText);
         message.setChatRoom(chatRoom);
         messageRepository.save(message);
+        return new MessageDTO(message.getId(),
+                message.getUserFrom().getId(), message.getUserFrom().getLogin(),
+                (long)-1, "",
+                message.getMessage(), false, message.getDate());
     }
 
     @Override
-    public void sendPrivateMessage(UserId actor, ChatRoomId chatRoomId, String messageText, UserId receiverUserId, TokenDTO token) {
+    public MessageDTO sendPrivateMessage(UserId actor, ChatRoomId chatRoomId, String messageText, UserId receiverUserId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
             throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
@@ -103,6 +107,10 @@ public class MessageServiceImpl implements MessageService {
         message.setChatRoom(chatRoom);
         message.setUserTo(userTo);
         messageRepository.save(message);
+        return new MessageDTO(message.getId(),
+                message.getUserFrom().getId(), message.getUserFrom().getLogin(),
+                message.getUserTo().getId(), message.getUserTo().getLogin(),
+                message.getMessage(), true, message.getDate());
     }
 
 }

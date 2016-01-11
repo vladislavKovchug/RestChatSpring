@@ -6,6 +6,7 @@ import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
+import com.teamdev.chat.exception.AuthenticationException;
 import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.repository.TokenRepository;
 import com.teamdev.chat.repository.UserRepository;
@@ -39,35 +40,38 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             if (user.getLogin().equals(login) && user.getPasswordHash().equals(passwordHash)) {
 
                 String token = UUID.randomUUID().toString();
-                
+                while (tokenRepository.findByToken(token) != null){
+                    token = UUID.randomUUID().toString();
+                }
+
                 tokenRepository.save(new Token(token, user.getId(), //token should expire from 15 minutes
                         new Date(System.currentTimeMillis() + FIFTEEN_MINUTES)));
 
                 return new LoginDTO(user.getId(), token);
             }
         }
-        throw new AccessControlException("Access denied.");
+        throw new AuthenticationException("Login Failed.");
     }
 
     @Override
     public void validateToken(UserId userId, TokenDTO token) {
         final Token userToken = tokenRepository.findByToken(token.token);
         if(userToken == null){
-            throw new AccessControlException("Access denied.");
+            throw new AuthenticationException("Access denied.");
         }
 
         if(userToken.getUserId() != userId.id){
-            throw new AccessControlException("Access denied.");
+            throw new AuthenticationException("Access denied.");
         }
 
         if(userToken.getExpireTime().compareTo(new Date()) <= 0){
             tokenRepository.delete(userToken);
-            throw new AccessControlException("Access denied.");
+            throw new AuthenticationException("Token has been expired.");
         }
 
         if (userRepository.findOne(userId.id) == null) {
             tokenRepository.delete(userToken);
-            throw new AccessControlException("Access denied.");
+            throw new AuthenticationException("Access denied.");
         }
 
     }
