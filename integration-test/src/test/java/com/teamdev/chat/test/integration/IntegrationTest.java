@@ -1,24 +1,23 @@
 package com.teamdev.chat.test.integration;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
+import com.google.gson.*;
+import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
+import com.teamdev.chat.request.LoginRequest;
 import com.teamdev.chat.test.exception.HttpRequestException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.Assert;
-import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IntegrationTest {
 
@@ -49,32 +48,32 @@ public class IntegrationTest {
         return result;
     }
 
-    protected LoginDTO loginAsTestUser(){
-
-        final Gson gson = new Gson();
-        final JsonObject jsonElement = new JsonObject();
-        jsonElement.addProperty(LOGIN_PARAMETER_NAME, USER_LOGIN);
-        jsonElement.addProperty(PASSWORD_PARAMETER_NAME, USER_PASSWORD);
-
-        StringEntity params = new StringEntity(gson.toJson(jsonElement), "UTF-8");
-        //params.setContentType("application/json; charset=UTF-8");
-
-        HttpPost post = new HttpPost(LOGIN_CHAT_URL);
-        post.setEntity(params);
-        post.addHeader("Content-Type", "application/json");
-
-        final HttpUriRequest loginRequest = RequestBuilder.post(LOGIN_CHAT_URL)
-                .setEntity(params)
-                .setHeader("Content-Type", "application/json")
-                .build();
-
-
-        String loginResponse = "";
+    protected String doRequestWithAssert(HttpUriRequest request){
+        String result = "";
         try {
-            loginResponse = doRequest(post);
+            result = doRequest(request);
         } catch (IOException e) {
-            Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
+            Assert.fail("Error while request to URL " + request.getURI().toString() + " :" + e.getMessage());
         }
+        return result;
+    }
+
+    protected RequestBuilder addJsonParameters(RequestBuilder builder, Object parameters){
+        final Gson gson = new Gson();
+        StringEntity params = new StringEntity(gson.toJson(parameters), "UTF-8");
+        params.setContentType("application/json; charset=UTF-8");
+        return builder.setEntity(params).setHeader("Content-Type", "application/json");
+    }
+
+    protected LoginDTO loginAsTestUser(){
+        return loginUser(USER_LOGIN, USER_PASSWORD);
+    }
+
+    protected LoginDTO loginUser(String login, String password){
+        final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),
+                new LoginRequest(login, password)).build();
+
+        String loginResponse = doRequestWithAssert(loginRequest);
 
         JsonObject loginJsonObject = new JsonParser().parse(loginResponse).getAsJsonObject();
 
@@ -82,6 +81,22 @@ public class IntegrationTest {
         final String userToken = loginJsonObject.get("token").getAsString();
 
         return new LoginDTO(userId, userToken);
+    }
+
+    protected List<ChatRoomDTO> readAllChatRooms(LoginDTO loginDTO) {
+        final HttpUriRequest getChatRoomsRequest = RequestBuilder.get(CHAT_URL + "/chats/" + loginDTO.userId)
+                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
+                .build();
+
+        String chatRoomResponse = doRequestWithAssert(getChatRoomsRequest);
+
+        List<ChatRoomDTO> result = new ArrayList<>();
+        final JsonArray jsonArray = new JsonParser().parse(chatRoomResponse).getAsJsonArray();
+        for (JsonElement jsonElement : jsonArray) {
+            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+            result.add(new ChatRoomDTO(jsonObject.get("id").getAsLong(), jsonObject.get("name").getAsString()));
+        }
+        return result;
     }
 
 }

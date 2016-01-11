@@ -2,7 +2,9 @@ package com.teamdev.chat.controller;
 
 import com.teamdev.chat.dto.*;
 import com.teamdev.chat.request.AddChatRoomRequest;
+import com.teamdev.chat.request.TokenRequest;
 import com.teamdev.chat.service.ChatRoomService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,19 +30,22 @@ public class ChatRoomController {
         return chatRoomService.addChatRoom(request.getName());
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(path = "/chats/{chatId}", method = RequestMethod.DELETE)
     public void deleteChatRoom(@PathVariable long chatId) {
         chatRoomService.deleteChatRoom(new ChatRoomId(chatId));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(path = "/chats/{chatId}/{userId}", method = RequestMethod.PUT)
-    public void joinChatRoom(@PathVariable long chatId, @PathVariable long userId, @RequestParam(value = "token") String token) {
-        chatRoomService.joinChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token));
+    public void joinChatRoom(@PathVariable long chatId, @PathVariable long userId, @RequestBody TokenRequest token) {
+        chatRoomService.joinChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token.getToken()));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(path = "/chats/{chatId}/{userId}", method = RequestMethod.DELETE)
     public void leaveChatRoom(@PathVariable long chatId, @PathVariable long userId, @RequestParam(value = "token") String token) {
-        chatRoomService.joinChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token));
+        chatRoomService.leaveChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token));
     }
 
     @RequestMapping(path = "/chats/{chatId}/{userId}", method = RequestMethod.GET)

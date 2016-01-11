@@ -22,7 +22,7 @@ public class UserAuthenticationServiceTest extends AbstractTest {
             final LoginDTO user = userAuthenticationService.login("admin", "admin");
             Assert.fail("Exception should be thrown.");
         } catch (Exception e){
-            Assert.assertEquals("Not correct Exception message.", "Access denied.", e.getMessage());
+            Assert.assertEquals("Not correct Exception message.", "Login Failed.", e.getMessage());
         }
     }
 

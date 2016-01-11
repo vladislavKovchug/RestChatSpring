@@ -6,15 +6,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
+import com.teamdev.chat.request.AddChatRoomRequest;
+import com.teamdev.chat.request.TokenRequest;
 import com.teamdev.chat.test.exception.HttpRequestException;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRoomIntegrationTest extends IntegrationTest {
@@ -48,6 +48,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                     .addParameter(TOKEN_PARAMETER_NAME, "some-token")
                     .build();
             doRequest(getChatRoomsRequest);
+            Assert.fail("Error, expected exception throw.");
         } catch (HttpRequestException e){
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
@@ -59,34 +60,11 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
     public void testCreateChatRoom(){
         final String newChatName = "new chat room";
 
-        final HttpUriRequest createChatRoomsRequest = RequestBuilder.post(CHAT_URL + "/chats")
-                .addParameter("name", newChatName)
+        final HttpUriRequest createChatRoomsRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/chats"),
+                new AddChatRoomRequest(newChatName))
                 .build();
 
-        String response = "";
-        try {
-            response = doRequest(createChatRoomsRequest);
-        } catch (IOException e) {
-            Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
-        }
-
-        Assert.assertEquals("Created chat room does not match", "{\"id\":3,\"name\":\"new chat room\"}", response);
-    }
-
-    @Test
-    public void testDeleteChatRoom(){
-        final String newChatName = "chat_room_for_delete@@@___";
-
-        final HttpUriRequest createChatRoomsRequest = RequestBuilder.post(CHAT_URL + "/chats")
-                .addParameter("name", newChatName)
-                .build();
-
-        String response = "";
-        try {
-            response = doRequest(createChatRoomsRequest);
-        } catch (IOException e) {
-            Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
-        }
+        String response = doRequestWithAssert(createChatRoomsRequest);
 
         final JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         final long id = jsonObject.get("id").getAsLong();
@@ -95,11 +73,30 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
         final HttpUriRequest deleteChatRoomsRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + id)
                 .build();
 
-        try {
-            doRequest(deleteChatRoomsRequest);
-        } catch (Exception e) {
-            Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
-        }
+        doRequestWithAssert(deleteChatRoomsRequest);
+
+        Assert.assertEquals("Created chat room name does not match", newChatName, name);
+
+    }
+
+    @Test
+    public void testDeleteChatRoom(){
+        final String newChatName = "sample chat";
+
+        final HttpUriRequest createChatRoomsRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/chats"),
+                new AddChatRoomRequest(newChatName))
+                .build();
+
+        String response = doRequestWithAssert(createChatRoomsRequest);
+
+        final JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+        final long id = jsonObject.get("id").getAsLong();
+        final String name = jsonObject.get("name").getAsString();
+
+        final HttpUriRequest deleteChatRoomsRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + id)
+                .build();
+
+        doRequestWithAssert(deleteChatRoomsRequest);
 
         final LoginDTO loginDTO = loginAsTestUser();
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
@@ -114,27 +111,53 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
         Assert.assertFalse("Error chat room exists after delete.", chatRoomExists);
     }
 
-    private List<ChatRoomDTO> readAllChatRooms(LoginDTO loginDTO) {
+    @Test
+    public void testJoinAndLeaveChatRoom(){
+        final LoginDTO loginDTO = loginAsTestUser();
+        final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
+        if(!chatRoomDTOs.iterator().hasNext()){
+            Assert.fail("No chat rooms to join");
+        }
 
-        final HttpUriRequest getChatRoomsRequest = RequestBuilder.get(CHAT_URL + "/chats" + "/" + loginDTO.userId)
+        final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
+
+        final HttpUriRequest joinChatRoomRequest = addJsonParameters(
+                RequestBuilder.put(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId),
+                new TokenRequest(loginDTO.token)).build();
+
+        doRequestWithAssert(joinChatRoomRequest);
+
+        final HttpUriRequest getChatRoomUsersRequest = RequestBuilder.get(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId)
                 .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
                 .build();
 
-        String chatRoomResponse = "";
-        try {
-            chatRoomResponse = doRequest(getChatRoomsRequest);
-        } catch (Exception e) {
-            Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
-        }
+        String usersResponse = doRequestWithAssert(getChatRoomUsersRequest);
 
-        List<ChatRoomDTO> result = new ArrayList<>();
-        final JsonArray jsonArray = new JsonParser().parse(chatRoomResponse).getAsJsonArray();
+        boolean isUserInList = false;
+        JsonArray jsonArray = new JsonParser().parse(usersResponse).getAsJsonArray();
         for (JsonElement jsonElement : jsonArray) {
             final JsonObject jsonObject = jsonElement.getAsJsonObject();
-
-            result.add(new ChatRoomDTO(jsonObject.get("id").getAsLong(), jsonObject.get("name").getAsString()));
+            isUserInList = isUserInList || USER_LOGIN.equals(jsonObject.get("name").getAsString());
         }
-        return result;
+
+        Assert.assertTrue("Error, user should be in chat room after join.", isUserInList);
+
+        final HttpUriRequest leaveChatRoomRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId)
+                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
+                .build();
+
+        doRequestWithAssert(leaveChatRoomRequest);
+
+        usersResponse = doRequestWithAssert(getChatRoomUsersRequest);
+
+        isUserInList = false;
+        jsonArray = new JsonParser().parse(usersResponse).getAsJsonArray();
+        for (JsonElement jsonElement : jsonArray) {
+            final JsonObject jsonObject = jsonElement.getAsJsonObject();
+            isUserInList = isUserInList || USER_LOGIN.equals(jsonObject.get("name").getAsString());
+        }
+
+        Assert.assertFalse("Error, user should not be in chat room after leave.", isUserInList);
     }
 
 }
