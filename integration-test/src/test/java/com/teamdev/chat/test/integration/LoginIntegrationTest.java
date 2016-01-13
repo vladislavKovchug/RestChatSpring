@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.LoginRequest;
-import com.teamdev.chat.test.exception.HttpRequestException;
+import com.teamdev.chat.test.exception.HttpRequestFailedException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -38,7 +38,7 @@ public class LoginIntegrationTest extends IntegrationTest {
                     new LoginRequest("admin", "admin")).build();
             doRequest(loginRequest);
             Assert.fail("Error, expected exception throw.");
-        } catch (HttpRequestException e){
+        } catch (HttpRequestFailedException e){
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
@@ -62,7 +62,7 @@ public class LoginIntegrationTest extends IntegrationTest {
         try{
             doRequest(getChatRoomsRequest);
             Assert.fail("Error, user was logged out, exception should be thrown.");
-        } catch (HttpRequestException e){
+        } catch (HttpRequestFailedException e){
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());

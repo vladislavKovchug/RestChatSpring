@@ -4,9 +4,9 @@ package com.teamdev.chat.impl.service;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
-import com.teamdev.chat.service.UserAuthenticationService;
-import com.teamdev.chat.service.UserService;
+import com.teamdev.chat.exception.UserException;
 import com.teamdev.chat.repository.UserRepository;
+import com.teamdev.chat.service.UserService;
 import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     public UserProfileDTO readUserProfile(UserId actor, UserId userId, TokenDTO token) {
         final User user = userRepository.findOne(userId.id);
         if (user == null) {
-            throw new RuntimeException("No user found with id " + Long.toString(userId.id) + ".");
+            throw new UserException("No user found with id " + Long.toString(userId.id) + ".");
         }
 
         return new UserProfileDTO(user.getId(), user.getLogin(), user.getBirthday());

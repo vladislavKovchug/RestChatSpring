@@ -1,10 +1,11 @@
 package com.teamdev.chat.impl.service;
 
 import com.teamdev.chat.dto.*;
-import com.teamdev.chat.service.ChatRoomService;
-import com.teamdev.chat.service.UserAuthenticationService;
+import com.teamdev.chat.exception.ChatRoomException;
 import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.chat.repository.UserRepository;
+import com.teamdev.chat.service.ChatRoomService;
+import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public ChatRoomDTO addChatRoom(String chatRoomName) {
         if(chatRoomRepository.findChatRoomByName(chatRoomName) != null){
-            throw new RuntimeException("Error with create chat room. Chat room with name " + chatRoomName +
+            throw new ChatRoomException("Error with create chat room. Chat room with name " + chatRoomName +
                     " already exists.");
         }
         final ChatRoom chatRoom = new ChatRoom(chatRoomName);
@@ -52,7 +53,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void deleteChatRoom(ChatRoomId chatRoomId) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if(chatRoom == null){
-            throw new RuntimeException("Error delete not existed chat room with id " + Long.toString(chatRoomId.id));
+            throw new ChatRoomException("Error delete not existed chat room with id " + Long.toString(chatRoomId.id));
         }
         chatRoomRepository.delete(chatRoom);
     }
@@ -61,13 +62,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatRoomException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
         final User user = userRepository.findOne(actor.id);
         if(chatRoom.getUsers().contains(user)){
-            throw new RuntimeException("Error with join chat room. User is already in current chat room.");
+            throw new ChatRoomException("Error with join chat room. User is already in current chat room.");
         }
 
         user.addChatRoom(chatRoom);
@@ -78,13 +79,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void leaveChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatRoomException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
         final User user = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(user)){
-            throw new RuntimeException("Error with leave chat room. User is not in chat room.");
+            throw new ChatRoomException("Error with leave chat room. User is not in chat room.");
         }
         user.removeChatRoom(chatRoom);
         userRepository.save(user);
@@ -94,7 +95,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public Iterable<UserProfileDTO> readChatRoomUserList(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatRoomException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 

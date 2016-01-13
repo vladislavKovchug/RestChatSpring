@@ -5,6 +5,7 @@ import com.teamdev.chat.dto.ChatRoomId;
 import com.teamdev.chat.dto.MessageDTO;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
+import com.teamdev.chat.exception.MessageException;
 import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.chat.repository.MessageRepository;
 import com.teamdev.chat.repository.UserRepository;
@@ -40,7 +41,7 @@ public class MessageServiceImpl implements MessageService {
     public Iterable<MessageDTO> readChatRoomMessages(UserId actor, ChatRoomId chatRoomId, long time, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("Error with getting chat room messages. Chat room with id " +
+            throw new MessageException("Error with getting chat room messages. Chat room with id " +
                     Long.toString(chatRoomId.id) + " not found.");
         }
 
@@ -73,11 +74,11 @@ public class MessageServiceImpl implements MessageService {
     public MessageDTO sendMessage(UserId actor, ChatRoomId chatRoomId, String messageText, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
+            throw new MessageException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
         }
         final User user = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(user)){
-            throw new RuntimeException("Error send message to not joined chat room.");
+            throw new MessageException("Error send message to not joined chat room.");
         }
 
         final Message message = new Message(user, new Date(), messageText);
@@ -93,15 +94,15 @@ public class MessageServiceImpl implements MessageService {
     public MessageDTO sendPrivateMessage(UserId actor, ChatRoomId chatRoomId, String messageText, UserId receiverUserId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new RuntimeException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
+            throw new MessageException("No chat room with id " + Long.toString(chatRoomId.id) + " found.");
         }
         final User userFrom = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(userFrom)){
-            throw new RuntimeException("Error send message to not joined chat room.");
+            throw new MessageException("Error send message to not joined chat room.");
         }
         final User userTo = userRepository.findOne(receiverUserId.id);
         if(!chatRoom.getUsers().contains(userTo)){
-            throw new RuntimeException("Error send message to user that not joined chat room.");
+            throw new MessageException("Error send message to user that not joined chat room.");
         }
         final Message message = new Message(userFrom, new Date(), messageText);
         message.setChatRoom(chatRoom);

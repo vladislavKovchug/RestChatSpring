@@ -7,6 +7,7 @@ import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.RegisterUserDTO;
 import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
+import com.teamdev.chat.exception.UserException;
 import com.teamdev.chat.service.UserManagementService;
 import com.teamdev.chat.repository.UserRepository;
 import com.teamdev.database.entity.User;
@@ -25,7 +26,7 @@ public class UserManagementServiceImpl implements UserManagementService {
         HashFunction hf = Hashing.sha256();
         String passwordHash = hf.newHasher().putString(registerUserDTO.password, Charsets.UTF_8).hash().toString();
         if (userRepository.findUserByName(registerUserDTO.login) != null) {
-            throw new RuntimeException("User " + registerUserDTO.login + " already exists.");
+            throw new UserException("User " + registerUserDTO.login + " already exists.");
         }
         final User user = new User(registerUserDTO.login, passwordHash,
                 registerUserDTO.getBirthday());
@@ -37,7 +38,7 @@ public class UserManagementServiceImpl implements UserManagementService {
     public void deleteUser(UserId userId) {
         final User user = userRepository.findOne(userId.id);
         if(user == null){
-            throw new RuntimeException("User with id " + Long.toString(userId.id) + " does not exists.");
+            throw new UserException("User with id " + Long.toString(userId.id) + " does not exists.");
         }
         userRepository.delete(user);
     }

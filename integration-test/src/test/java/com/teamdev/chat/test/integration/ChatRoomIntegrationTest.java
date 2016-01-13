@@ -8,7 +8,7 @@ import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.AddChatRoomRequest;
 import com.teamdev.chat.request.TokenRequest;
-import com.teamdev.chat.test.exception.HttpRequestException;
+import com.teamdev.chat.test.exception.HttpRequestFailedException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -49,7 +49,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                     .build();
             doRequest(getChatRoomsRequest);
             Assert.fail("Error, expected exception throw.");
-        } catch (HttpRequestException e){
+        } catch (HttpRequestFailedException e){
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());

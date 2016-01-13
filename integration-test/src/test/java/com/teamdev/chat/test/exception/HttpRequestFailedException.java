@@ -2,11 +2,11 @@ package com.teamdev.chat.test.exception;
 
 import org.apache.http.StatusLine;
 
-public class HttpRequestException extends RuntimeException {
+public class HttpRequestFailedException extends RuntimeException {
 
     private StatusLine statusLine;
 
-    public HttpRequestException(StatusLine statusLine) {
+    public HttpRequestFailedException(StatusLine statusLine) {
         super(statusLine.toString());
         this.statusLine = statusLine;
     }

@@ -8,7 +8,7 @@ import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.request.LoginRequest;
 import com.teamdev.chat.request.RegisterUserRequest;
-import com.teamdev.chat.test.exception.HttpRequestException;
+import com.teamdev.chat.test.exception.HttpRequestFailedException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -51,7 +51,7 @@ public class UserIntegrationTest extends IntegrationTest {
                     new LoginRequest(registeredUser.name, newUserPassword)).build();
             doRequest(loginRequest);
             Assert.fail("Error, Logged with deleted user.");
-        } catch (HttpRequestException e){
+        } catch (HttpRequestFailedException e){
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());

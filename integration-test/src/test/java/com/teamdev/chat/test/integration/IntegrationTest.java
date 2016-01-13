@@ -4,7 +4,7 @@ import com.google.gson.*;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.LoginRequest;
-import com.teamdev.chat.test.exception.HttpRequestException;
+import com.teamdev.chat.test.exception.HttpRequestFailedException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -35,7 +35,7 @@ public abstract class IntegrationTest {
         final CloseableHttpResponse response = httpClient.execute(request);
 
         if(response.getStatusLine().getStatusCode() != 200){
-            throw new HttpRequestException(response.getStatusLine());
+            throw new HttpRequestFailedException(response.getStatusLine());
         }
 
         final InputStreamReader reader = new InputStreamReader(response.getEntity().getContent());
