@@ -5,7 +5,6 @@ import com.teamdev.chat.exception.ChatRoomException;
 import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.chat.repository.UserRepository;
 import com.teamdev.chat.service.ChatRoomService;
-import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.database.entity.ChatRoom;
 import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Inject
     private ChatRoomRepository chatRoomRepository;
-
-    @Inject
-    private UserAuthenticationService userAuthenticationService;
 
     @Inject
     private UserRepository userRepository;

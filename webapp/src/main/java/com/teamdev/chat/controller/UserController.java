@@ -41,7 +41,7 @@ public class UserController {
     public
     @ResponseBody
     Iterable<UserProfileDTO> readAllUsers(@PathVariable long userId, @RequestParam("token") String token) {
-        return userService.readAllUsersProfile(new UserId(userId), new TokenDTO(token));
+        return userService.readAllUsersProfiles(new UserId(userId), new TokenDTO(token));
     }
 
     @RequestMapping(path = "/users/{actor}/{userId}", method = RequestMethod.GET)

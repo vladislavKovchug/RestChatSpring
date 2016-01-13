@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Iterable<UserProfileDTO> readAllUsersProfile(UserId actor, TokenDTO token) {
+    public Iterable<UserProfileDTO> readAllUsersProfiles(UserId actor, TokenDTO token) {
         final List<User> allUsers = userRepository.findAll();
         final ArrayList<UserProfileDTO> userProfileDTOs = new ArrayList<>(allUsers.size());
         for (User user : allUsers) {
