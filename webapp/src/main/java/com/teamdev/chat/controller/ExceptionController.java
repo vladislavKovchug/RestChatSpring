@@ -11,7 +11,7 @@ public class ExceptionController {
 
     @ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Authentication required.")
     @ExceptionHandler(AuthenticationException.class)
-    public void handleAuthenticationException(){
+    public void handleAuthenticationException() {
 
     }
 

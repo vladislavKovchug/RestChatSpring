@@ -113,7 +113,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testReadNotExistingChatRoomMessagesFail(){
+    public void testReadNotExistingChatRoomMessagesFail() {
         final LoginDTO loginDTO = loginAsTestUser();
         final HttpUriRequest getMessagesRequest =
                 RequestBuilder.get(CHAT_URL + "/messages/-1/" + loginDTO.userId + "/0")
@@ -125,7 +125,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostingPublicMessageToNotExistingChatRoomFail(){
+    public void testPostingPublicMessageToNotExistingChatRoomFail() {
         final LoginDTO loginDTO = loginAsTestUser();
 
         final HttpUriRequest postMessageRequest =
@@ -138,7 +138,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostingPublicMessageToNotJoinedChatRoomFail(){
+    public void testPostingPublicMessageToNotJoinedChatRoomFail() {
         final LoginDTO loginDTO = loginAsTestUser();
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
@@ -164,7 +164,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostingPrivateMessageToNotExistingChatRoomFail(){
+    public void testPostingPrivateMessageToNotExistingChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
         final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
 
@@ -179,7 +179,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostingPrivateMessageToNotJoinedChatRoomFail(){
+    public void testPostingPrivateMessageToNotJoinedChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
         final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
 
@@ -201,7 +201,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostingPrivateMessageToUserNotInChatRoomFail(){
+    public void testPostingPrivateMessageToUserNotInChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
         final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
 

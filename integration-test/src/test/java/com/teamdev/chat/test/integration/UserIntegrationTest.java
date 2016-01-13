@@ -61,7 +61,7 @@ public class UserIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testDeleteNotExistingUserFails(){
+    public void testDeleteNotExistingUserFails() {
         final HttpUriRequest deleteUserRequest = RequestBuilder.delete(CHAT_URL + "/users/-1")
                 .build();
 
@@ -71,7 +71,7 @@ public class UserIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testRegisterExistedUserFails(){
+    public void testRegisterExistedUserFails() {
         final HttpUriRequest createUserRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/register"),
                 new RegisterUserRequest(USER_LOGIN, "new password", new Date().getTime()))
                 .build();
@@ -80,7 +80,6 @@ public class UserIntegrationTest extends IntegrationTest {
 
         Assert.assertEquals("Error wrong status code on delete not existed user.", 500, statusLine.getStatusCode());
     }
-
 
 
 }

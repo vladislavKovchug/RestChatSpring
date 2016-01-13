@@ -11,11 +11,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -26,7 +23,7 @@ import java.util.List;
 @Configuration
 @EnableAspectJAutoProxy
 @ComponentScan({"com.teamdev.chat.impl", "com.teamdev.chat.controller"})
-public class ContextConfiguration extends WebMvcConfigurerAdapter  {
+public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @Inject
     SampleDataCreator sampleDataCreator;
@@ -43,7 +40,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter  {
 
 
     @Bean
-    public ChatDatabase chatDatabase(){
+    public ChatDatabase chatDatabase() {
         final ChatDatabase chatDatabase = new ChatDatabase();
         chatDatabase.createTable(Tables.USERS_TABLE);
         chatDatabase.createTable(Tables.TOKENS_TABLE);
@@ -52,16 +49,18 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter  {
         return chatDatabase;
     }
 
-    @Bean SampleDataCreator sampleDataCreator(){
+    @Bean
+    SampleDataCreator sampleDataCreator() {
         return new SampleDataCreator();
     }
 
-    @Bean AuthenticationCheckerAspect authenticationCheckerAspect(){
+    @Bean
+    AuthenticationCheckerAspect authenticationCheckerAspect() {
         return new AuthenticationCheckerAspect();
     }
 
     @PostConstruct
-    public void onContextInitialize(){
+    public void onContextInitialize() {
         sampleDataCreator.createSampleData();
         System.out.println("spring context was initialized");
     }
