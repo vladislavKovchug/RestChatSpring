@@ -34,7 +34,7 @@ public abstract class IntegrationTest {
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         final CloseableHttpResponse response = httpClient.execute(request);
 
-        if(response.getStatusLine().getStatusCode() != 200){
+        if (response.getStatusLine().getStatusCode() != 200) {
             throw new HttpRequestFailedException(response.getStatusLine());
         }
 
@@ -45,7 +45,7 @@ public abstract class IntegrationTest {
         return result;
     }
 
-    protected String doRequestWithAssert(HttpUriRequest request){
+    protected String doRequestWithAssert(HttpUriRequest request) {
         String result = "";
         try {
             result = doRequest(request);
@@ -55,18 +55,18 @@ public abstract class IntegrationTest {
         return result;
     }
 
-    protected RequestBuilder addJsonParameters(RequestBuilder builder, Object parameters){
+    protected RequestBuilder addJsonParameters(RequestBuilder builder, Object parameters) {
         final Gson gson = new GsonBuilder().create();
         StringEntity params = new StringEntity(gson.toJson(parameters), "UTF-8");
         params.setContentType("application/json; charset=UTF-8");
         return builder.setEntity(params).setHeader("Content-Type", "application/json");
     }
 
-    protected LoginDTO loginAsTestUser(){
+    protected LoginDTO loginAsTestUser() {
         return loginUser(USER_LOGIN, USER_PASSWORD);
     }
 
-    protected LoginDTO loginUser(String login, String password){
+    protected LoginDTO loginUser(String login, String password) {
         final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),
                 new LoginRequest(login, password)).build();
 

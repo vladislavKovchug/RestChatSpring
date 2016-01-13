@@ -20,7 +20,6 @@ import java.util.List;
 public class ChatRoomIntegrationTest extends IntegrationTest {
 
 
-
     @Test
     public void testReadAllChatRooms() {
         final LoginDTO loginDTO = loginAsTestUser();
@@ -42,14 +41,14 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testReadAllChatRoomsFailsOnInvalidToken(){
-        try{
+    public void testReadAllChatRoomsFailsOnInvalidToken() {
+        try {
             final HttpUriRequest getChatRoomsRequest = RequestBuilder.get(CHAT_URL + "/chats" + "/1")
                     .addParameter(TOKEN_PARAMETER_NAME, "some-token")
                     .build();
             doRequest(getChatRoomsRequest);
             Assert.fail("Error, expected exception throw.");
-        } catch (HttpRequestFailedException e){
+        } catch (HttpRequestFailedException e) {
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
@@ -57,7 +56,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testCreateChatRoom(){
+    public void testCreateChatRoom() {
         final String newChatName = "new chat room";
 
         final HttpUriRequest createChatRoomsRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/chats"),
@@ -80,7 +79,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testDeleteChatRoom(){
+    public void testDeleteChatRoom() {
         final String newChatName = "sample chat";
 
         final HttpUriRequest createChatRoomsRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/chats"),
@@ -102,8 +101,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
         boolean chatRoomExists = false;
 
-        for(ChatRoomDTO chatRoomDTO: chatRoomDTOs){
-            if(newChatName.equals(chatRoomDTO.name)){
+        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
+            if (newChatName.equals(chatRoomDTO.name)) {
                 chatRoomExists = true;
             }
         }
@@ -112,10 +111,10 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testJoinAndLeaveChatRoom(){
+    public void testJoinAndLeaveChatRoom() {
         final LoginDTO loginDTO = loginAsTestUser();
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
-        if(!chatRoomDTOs.iterator().hasNext()){
+        if (!chatRoomDTOs.iterator().hasNext()) {
             Assert.fail("No chat rooms to join");
         }
 

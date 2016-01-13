@@ -19,12 +19,12 @@ import java.util.List;
 public class MessageIntegrationTest extends IntegrationTest {
 
     @Test
-    public void testPostPublicMessage(){
+    public void testPostPublicMessage() {
         final LoginDTO loginDTO = loginAsTestUser();
         final String message = "hello";
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
-        if(!chatRoomDTOs.iterator().hasNext()){
+        if (!chatRoomDTOs.iterator().hasNext()) {
             Assert.fail("No chat rooms to join");
         }
 
@@ -37,8 +37,8 @@ public class MessageIntegrationTest extends IntegrationTest {
         doRequestWithAssert(joinChatRoomRequest);
 
         final HttpUriRequest postMessageRequest =
-                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id  + "/" + loginDTO.userId),
-                new PostMessageRequest(message, loginDTO.token)).build();
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id + "/" + loginDTO.userId),
+                        new PostMessageRequest(message, loginDTO.token)).build();
 
         final String messageResponse = doRequestWithAssert(postMessageRequest);
         final JsonObject jsonMessage = new JsonParser().parse(messageResponse).getAsJsonObject();
@@ -49,7 +49,7 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         boolean messageInChatRoom = false;
         final JsonArray messages = readChatRoomMessages(loginDTO, chatRoom.id);
-        for(JsonElement jsonElement : messages){
+        for (JsonElement jsonElement : messages) {
             messageInChatRoom = messageInChatRoom || jsonElement.getAsJsonObject().get("id").getAsLong() == sentMessageId;
         }
         Assert.assertTrue("Error, public message was not found", messageInChatRoom);
@@ -61,13 +61,13 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testPostPrivateMessage(){
+    public void testPostPrivateMessage() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
         final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
         final String message = "pss.. do you want some force push ?";
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
-        if(!chatRoomDTOs.iterator().hasNext()){
+        if (!chatRoomDTOs.iterator().hasNext()) {
             Assert.fail("No chat rooms to join");
         }
         final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
@@ -83,7 +83,7 @@ public class MessageIntegrationTest extends IntegrationTest {
         doRequestWithAssert(joinSecondUserToChatRoomRequest);
 
         final HttpUriRequest postMessageRequest =
-                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id  +
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id +
                                 "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
                         new PostMessageRequest(message, testUserLoginDTO.token)).build();
 
@@ -96,7 +96,7 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         boolean messageInChatRoom = false;
         final JsonArray messages = readChatRoomMessages(secondUserLoginDTO, chatRoom.id);
-        for(JsonElement jsonElement : messages){
+        for (JsonElement jsonElement : messages) {
             messageInChatRoom = messageInChatRoom || jsonElement.getAsJsonObject().get("id").getAsLong() == sentMessageId;
         }
         Assert.assertTrue("Error, private message was not found", messageInChatRoom);
@@ -111,11 +111,11 @@ public class MessageIntegrationTest extends IntegrationTest {
         doRequestWithAssert(leaveChatRoomSecondRequest);
     }
 
-    private JsonArray readChatRoomMessages(LoginDTO loginDTO, long chatRoomId){
+    private JsonArray readChatRoomMessages(LoginDTO loginDTO, long chatRoomId) {
         final HttpUriRequest getMessagesRequest =
                 RequestBuilder.get(CHAT_URL + "/messages/" + chatRoomId + "/" + loginDTO.userId + "/0")
-                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
-                .build();
+                        .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
+                        .build();
         String messagesResponse = doRequestWithAssert(getMessagesRequest);
         return new JsonParser().parse(messagesResponse).getAsJsonArray();
     }

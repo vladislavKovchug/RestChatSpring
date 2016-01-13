@@ -21,7 +21,7 @@ import java.util.List;
 public class UserIntegrationTest extends IntegrationTest {
 
     @Test
-    public void testUserRegisterAndDelete(){
+    public void testUserRegisterAndDelete() {
 
         final String newUserPassword = "password";
         final String newUserLogin = "Test_User";
@@ -46,19 +46,18 @@ public class UserIntegrationTest extends IntegrationTest {
                 .build();
         final String deleteResponse = doRequestWithAssert(leaveChatRoomSecondRequest);
 
-        try{
+        try {
             final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),
                     new LoginRequest(registeredUser.name, newUserPassword)).build();
             doRequest(loginRequest);
             Assert.fail("Error, Logged with deleted user.");
-        } catch (HttpRequestFailedException e){
+        } catch (HttpRequestFailedException e) {
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
         }
 
     }
-
 
 
 }

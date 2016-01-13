@@ -16,12 +16,12 @@ import java.io.IOException;
 public class LoginIntegrationTest extends IntegrationTest {
 
     @Test
-    public void testUserLogin(){
+    public void testUserLogin() {
         final LoginDTO loginDTO = loginAsTestUser();
 
         final HttpUriRequest getChatRoomsRequest =
                 RequestBuilder.get(CHAT_URL + "/users/" + loginDTO.userId + "/" + loginDTO.userId)
-                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token).build();
+                        .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token).build();
 
         String currentUserProfile = doRequestWithAssert(getChatRoomsRequest);
 
@@ -32,13 +32,13 @@ public class LoginIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testUserLoginFailsWithBadCredentials(){
-        try{
+    public void testUserLoginFailsWithBadCredentials() {
+        try {
             final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),
                     new LoginRequest("admin", "admin")).build();
             doRequest(loginRequest);
             Assert.fail("Error, expected exception throw.");
-        } catch (HttpRequestFailedException e){
+        } catch (HttpRequestFailedException e) {
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
@@ -46,12 +46,12 @@ public class LoginIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    public void testUserLogout(){
+    public void testUserLogout() {
         final LoginDTO loginDTO = loginAsTestUser();
 
         final HttpUriRequest logoutRequest =
                 RequestBuilder.delete(CHAT_URL + "/logout/" + loginDTO.userId)
-                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token).build();
+                        .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token).build();
 
         doRequestWithAssert(logoutRequest);
 
@@ -59,10 +59,10 @@ public class LoginIntegrationTest extends IntegrationTest {
                 RequestBuilder.get(CHAT_URL + "/users/" + loginDTO.userId + "/" + loginDTO.userId)
                         .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token).build();
 
-        try{
+        try {
             doRequest(getChatRoomsRequest);
             Assert.fail("Error, user was logged out, exception should be thrown.");
-        } catch (HttpRequestFailedException e){
+        } catch (HttpRequestFailedException e) {
             Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
