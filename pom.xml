@@ -13,7 +13,6 @@
         <module>model</module>
         <module>in-memory-database</module>
         <module>model-impl</module>
-        <module>spring-app</module>
         <module>integration-test</module>
     </modules>
 

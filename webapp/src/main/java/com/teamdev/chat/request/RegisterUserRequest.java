@@ -1,14 +1,12 @@
 package com.teamdev.chat.request;
 
 
-import java.util.Date;
-
 public class RegisterUserRequest {
     private String login;
     private String password;
-    private Date birthday;
+    private long birthday;
 
-    public RegisterUserRequest(String login, String password, Date birthday) {
+    public RegisterUserRequest(String login, String password, long birthday) {
         this.login = login;
         this.password = password;
         this.birthday = birthday;
@@ -33,11 +31,11 @@ public class RegisterUserRequest {
         this.password = password;
     }
 
-    public Date getBirthday() {
+    public long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(long birthday) {
         this.birthday = birthday;
     }
 }

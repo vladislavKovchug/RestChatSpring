@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
+import java.util.Date;
 
 @Controller
 public class UserController {
@@ -27,7 +28,7 @@ public class UserController {
     @ResponseBody
     UserProfileDTO registerUser(@RequestBody RegisterUserRequest registerUserRequest) {
         return userManagementService.register(new RegisterUserDTO(registerUserRequest.getLogin(),
-                registerUserRequest.getPassword(), registerUserRequest.getBirthday()));
+                registerUserRequest.getPassword(), new Date(registerUserRequest.getBirthday()) ));
     }
 
     @ResponseStatus(value = HttpStatus.OK)

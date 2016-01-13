@@ -26,7 +26,7 @@ public class UserIntegrationTest extends IntegrationTest {
         final String newUserPassword = "password";
         final String newUserLogin = "Test_User";
         final HttpUriRequest createUserRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/register"),
-                new RegisterUserRequest(newUserLogin, newUserPassword, new Date()))
+                new RegisterUserRequest(newUserLogin, newUserPassword, new Date().getTime()))
                 .build();
 
         String response = doRequestWithAssert(createUserRequest);
@@ -44,7 +44,7 @@ public class UserIntegrationTest extends IntegrationTest {
 
         final HttpUriRequest leaveChatRoomSecondRequest = RequestBuilder.delete(CHAT_URL + "/users/" + loginDTO.userId)
                 .build();
-        doRequestWithAssert(leaveChatRoomSecondRequest);
+        final String deleteResponse = doRequestWithAssert(leaveChatRoomSecondRequest);
 
         try{
             final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),

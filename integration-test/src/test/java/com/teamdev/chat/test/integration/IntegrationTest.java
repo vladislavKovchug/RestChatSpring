@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IntegrationTest {
+public abstract class IntegrationTest {
 
     protected static final String CHAT_ROOM_HOST = "localhost:8080";
 
@@ -28,9 +28,6 @@ public class IntegrationTest {
     protected static final String USER_LOGIN = "user1";
     protected static final String USER_PASSWORD = "12345";
 
-    protected static final String LOGIN_PARAMETER_NAME = "login";
-    protected static final String PASSWORD_PARAMETER_NAME = "password";
-    protected static final String USER_ID_PARAMETER_NAME = "userid";
     protected static final String TOKEN_PARAMETER_NAME = "token";
 
     protected String doRequest(HttpUriRequest request) throws IOException {
@@ -59,7 +56,7 @@ public class IntegrationTest {
     }
 
     protected RequestBuilder addJsonParameters(RequestBuilder builder, Object parameters){
-        final Gson gson = new Gson();
+        final Gson gson = new GsonBuilder().create();
         StringEntity params = new StringEntity(gson.toJson(parameters), "UTF-8");
         params.setContentType("application/json; charset=UTF-8");
         return builder.setEntity(params).setHeader("Content-Type", "application/json");
