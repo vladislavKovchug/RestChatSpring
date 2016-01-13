@@ -9,6 +9,7 @@ import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.PostMessageRequest;
 import com.teamdev.chat.request.TokenRequest;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -109,6 +110,126 @@ public class MessageIntegrationTest extends IntegrationTest {
                 .addParameter(TOKEN_PARAMETER_NAME, secondUserLoginDTO.token)
                 .build();
         doRequestWithAssert(leaveChatRoomSecondRequest);
+    }
+
+    @Test
+    public void testReadNotExistingChatRoomMessagesFail(){
+        final LoginDTO loginDTO = loginAsTestUser();
+        final HttpUriRequest getMessagesRequest =
+                RequestBuilder.get(CHAT_URL + "/messages/-1/" + loginDTO.userId + "/0")
+                        .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
+                        .build();
+        final StatusLine statusLine = doFailRequest(getMessagesRequest);
+
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testPostingPublicMessageToNotExistingChatRoomFail(){
+        final LoginDTO loginDTO = loginAsTestUser();
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/-1/" + loginDTO.userId),
+                        new PostMessageRequest("some message", loginDTO.token)).build();
+
+        final StatusLine statusLine = doFailRequest(postMessageRequest);
+
+        Assert.assertEquals("Error wrong status code on post public message to not existed chat room.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testPostingPublicMessageToNotJoinedChatRoomFail(){
+        final LoginDTO loginDTO = loginAsTestUser();
+
+        final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
+        if (!chatRoomDTOs.iterator().hasNext()) {
+            Assert.fail("No chat rooms to join");
+        }
+
+        final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
+
+        final HttpUriRequest joinChatRoomRequest = addJsonParameters(
+                RequestBuilder.put(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId),
+                new TokenRequest(loginDTO.token)).build();
+
+        doRequestWithAssert(joinChatRoomRequest);
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id + "/" + loginDTO.userId),
+                        new PostMessageRequest("some message", loginDTO.token)).build();
+
+        final StatusLine statusLine = doFailRequest(postMessageRequest);
+
+        Assert.assertEquals("Error wrong status code on post public message to not joined chat room.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testPostingPrivateMessageToNotExistingChatRoomFail(){
+        final LoginDTO testUserLoginDTO = loginAsTestUser();
+        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/-1" +
+                                "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
+                        new PostMessageRequest("some message", testUserLoginDTO.token)).build();
+
+        final StatusLine statusLine = doFailRequest(postMessageRequest);
+
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testPostingPrivateMessageToNotJoinedChatRoomFail(){
+        final LoginDTO testUserLoginDTO = loginAsTestUser();
+        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+
+        final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
+        if (!chatRoomDTOs.iterator().hasNext()) {
+            Assert.fail("No chat rooms to join");
+        }
+
+        final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id +
+                                "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
+                        new PostMessageRequest("some message", testUserLoginDTO.token)).build();
+
+        final StatusLine statusLine = doFailRequest(postMessageRequest);
+
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testPostingPrivateMessageToUserNotInChatRoomFail(){
+        final LoginDTO testUserLoginDTO = loginAsTestUser();
+        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+
+        final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
+        if (!chatRoomDTOs.iterator().hasNext()) {
+            Assert.fail("No chat rooms to join");
+        }
+
+        final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
+
+        final HttpUriRequest joinFirstUserToChatRoomRequest = addJsonParameters(
+                RequestBuilder.put(CHAT_URL + "/chats/" + chatRoom.id + "/" + testUserLoginDTO.userId),
+                new TokenRequest(testUserLoginDTO.token)).build();
+        doRequestWithAssert(joinFirstUserToChatRoomRequest);
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id +
+                                "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
+                        new PostMessageRequest("some message", testUserLoginDTO.token)).build();
+
+        final StatusLine statusLine = doFailRequest(postMessageRequest);
+
+        final HttpUriRequest leaveChatRoomRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + chatRoom.id + "/" + testUserLoginDTO.userId)
+                .addParameter(TOKEN_PARAMETER_NAME, testUserLoginDTO.token)
+                .build();
+        doRequestWithAssert(leaveChatRoomRequest);
+
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
     }
 
     private JsonArray readChatRoomMessages(LoginDTO loginDTO, long chatRoomId) {

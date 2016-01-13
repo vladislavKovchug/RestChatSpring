@@ -67,7 +67,21 @@ public class LoginIntegrationTest extends IntegrationTest {
         } catch (IOException e) {
             Assert.fail("Error while request to URL " + LOGIN_CHAT_URL + " :" + e.getMessage());
         }
+    }
 
+    @Test
+    public void testDoSomeActionFailsOnInvalidToken() {
+        try {
+            final HttpUriRequest getChatRoomsRequest = RequestBuilder.get(CHAT_URL + "/chats" + "/1")
+                    .addParameter(TOKEN_PARAMETER_NAME, "some-token")
+                    .build();
+            doRequest(getChatRoomsRequest);
+            Assert.fail("Error, expected exception throw.");
+        } catch (HttpRequestFailedException e) {
+            Assert.assertEquals("Error, wrong status code.", 403, e.getStatusLine().getStatusCode());
+        } catch (IOException e) {
+            Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
+        }
     }
 
 }

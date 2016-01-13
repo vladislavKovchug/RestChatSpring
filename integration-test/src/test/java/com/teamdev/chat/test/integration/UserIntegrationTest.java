@@ -9,6 +9,7 @@ import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.request.LoginRequest;
 import com.teamdev.chat.request.RegisterUserRequest;
 import com.teamdev.chat.test.exception.HttpRequestFailedException;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -42,9 +43,9 @@ public class UserIntegrationTest extends IntegrationTest {
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
         Assert.assertTrue("should be selected at least 2 chat rooms", chatRoomDTOs.size() >= 2);
 
-        final HttpUriRequest leaveChatRoomSecondRequest = RequestBuilder.delete(CHAT_URL + "/users/" + loginDTO.userId)
+        final HttpUriRequest deleteUserRequest = RequestBuilder.delete(CHAT_URL + "/users/" + loginDTO.userId)
                 .build();
-        final String deleteResponse = doRequestWithAssert(leaveChatRoomSecondRequest);
+        final String deleteResponse = doRequestWithAssert(deleteUserRequest);
 
         try {
             final HttpUriRequest loginRequest = addJsonParameters(RequestBuilder.post(LOGIN_CHAT_URL),
@@ -58,6 +59,28 @@ public class UserIntegrationTest extends IntegrationTest {
         }
 
     }
+
+    @Test
+    public void testDeleteNotExistingUserFails(){
+        final HttpUriRequest deleteUserRequest = RequestBuilder.delete(CHAT_URL + "/users/-1")
+                .build();
+
+        final StatusLine statusLine = doFailRequest(deleteUserRequest);
+
+        Assert.assertEquals("Error wrong status code on delete not existed user.", 500, statusLine.getStatusCode());
+    }
+
+    @Test
+    public void testRegisterExistedUserFails(){
+        final HttpUriRequest createUserRequest = addJsonParameters(RequestBuilder.post(CHAT_URL + "/register"),
+                new RegisterUserRequest(USER_LOGIN, "new password", new Date().getTime()))
+                .build();
+
+        final StatusLine statusLine = doFailRequest(createUserRequest);
+
+        Assert.assertEquals("Error wrong status code on delete not existed user.", 500, statusLine.getStatusCode());
+    }
+
 
 
 }
