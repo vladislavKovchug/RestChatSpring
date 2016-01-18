@@ -1,4 +1,4 @@
-package com.teamdev.chatimpl.test;
+package com.teamdev.chat.test;
 
 import com.teamdev.chat.dto.*;
 import org.junit.Assert;

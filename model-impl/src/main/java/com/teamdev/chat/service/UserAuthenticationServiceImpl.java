@@ -1,4 +1,4 @@
-package com.teamdev.chat.impl.service;
+package com.teamdev.chat.service;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.HashFunction;
@@ -9,9 +9,8 @@ import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.entity.Token;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.AuthenticationException;
-import com.teamdev.chat.hrepository.TokenRepository;
-import com.teamdev.chat.hrepository.UserRepository;
-import com.teamdev.chat.service.UserAuthenticationService;
+import com.teamdev.chat.repository.TokenRepository;
+import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

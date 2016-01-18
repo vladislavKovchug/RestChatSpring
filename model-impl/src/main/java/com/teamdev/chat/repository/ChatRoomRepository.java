@@ -1,4 +1,4 @@
-package com.teamdev.chat.hrepository;
+package com.teamdev.chat.repository;
 
 
 import com.teamdev.chat.entity.ChatRoom;

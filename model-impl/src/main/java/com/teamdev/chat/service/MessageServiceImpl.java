@@ -1,4 +1,4 @@
-package com.teamdev.chat.impl.service;
+package com.teamdev.chat.service;
 
 
 import com.teamdev.chat.dto.ChatRoomId;
@@ -9,19 +9,19 @@ import com.teamdev.chat.entity.ChatRoom;
 import com.teamdev.chat.entity.Message;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.MessageException;
-import com.teamdev.chat.hrepository.ChatRoomRepository;
-import com.teamdev.chat.hrepository.MessageRepository;
-import com.teamdev.chat.hrepository.UserRepository;
-import com.teamdev.chat.service.MessageService;
-import com.teamdev.chat.service.UserAuthenticationService;
+import com.teamdev.chat.repository.ChatRoomRepository;
+import com.teamdev.chat.repository.MessageRepository;
+import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class MessageServiceImpl implements MessageService {
 
     public static final int FIVE_MINUTES = 300;

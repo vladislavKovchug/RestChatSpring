@@ -1,4 +1,4 @@
-package com.teamdev.chat.impl.service;
+package com.teamdev.chat.service;
 
 
 import com.google.common.base.Charsets;
@@ -9,17 +9,21 @@ import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.UserException;
-import com.teamdev.chat.hrepository.UserRepository;
-import com.teamdev.chat.service.UserManagementService;
+import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @Service
+@Transactional
 public class UserManagementServiceImpl implements UserManagementService {
 
     @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private UserAuthenticationService userAuthenticationService;
 
     @Override
     public UserProfileDTO register(RegisterUserDTO registerUserDTO) {
@@ -36,10 +40,11 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Override
     public void deleteUser(UserId userId) {
-        final User user = userRepository.findOne(userId.id);
+        User user = userRepository.findOne(userId.id);
         if(user == null){
             throw new UserException("User with id " + Long.toString(userId.id) + " does not exists.");
         }
-        userRepository.delete(user);
+
+        userRepository.delete(user.getId());
     }
 }

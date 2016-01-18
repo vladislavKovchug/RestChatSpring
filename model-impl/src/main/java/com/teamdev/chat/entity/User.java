@@ -18,6 +18,11 @@ public class User {
     private String passwordHash;
     private Date birthday;
 
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id")
+    private Token token;
+
+
     @ManyToMany
     @JoinTable(name = "user_chatroom")
     private Set<ChatRoom> chatRooms = new HashSet<>();
@@ -65,6 +70,10 @@ public class User {
 
     public Set<ChatRoom> getChatRooms() {
         return chatRooms;
+    }
+
+    public void setChatRooms(Set<ChatRoom> chatRooms) {
+        this.chatRooms = chatRooms;
     }
 
     @Override

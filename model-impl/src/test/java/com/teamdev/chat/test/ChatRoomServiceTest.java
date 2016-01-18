@@ -1,13 +1,9 @@
-package com.teamdev.chatimpl.test;
+package com.teamdev.chat.test;
 
 
 import com.teamdev.chat.dto.*;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Date;
 
 public class ChatRoomServiceTest extends AbstractTest {
 

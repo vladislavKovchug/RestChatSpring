@@ -1,15 +1,10 @@
-package com.teamdev.chatimpl.test;
+package com.teamdev.chat.test;
 
 import com.teamdev.chat.dto.*;
-import com.teamdev.chat.proxy.AuthenticationCheckerAspect;
 import com.teamdev.chat.service.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -18,30 +13,8 @@ import javax.inject.Inject;
 import java.util.Date;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@EnableAspectJAutoProxy
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = com.teamdev.chat.test.SpringConfig.class, loader = AnnotationConfigContextLoader.class)
 public abstract class AbstractTest {
-
-    @Configuration
-    @ComponentScan("com.teamdev.chat.impl")
-    static class ContextConfiguration {
-
-        /*@Bean
-        public ChatDatabase chatDatabase(){
-            final ChatDatabase chatDatabase = new ChatDatabase();
-            chatDatabase.createTable(Tables.USERS_TABLE);
-            chatDatabase.createTable(Tables.TOKENS_TABLE);
-            chatDatabase.createTable(Tables.MESSAGES_TABLE);
-            chatDatabase.createTable(Tables.CHAT_ROOMS_TABLE);
-            return chatDatabase;
-        }*/
-
-        @Bean
-        AuthenticationCheckerAspect authenticationCheckerAspect(){
-            return new AuthenticationCheckerAspect();
-        }
-
-    }
 
     @Inject
     protected UserAuthenticationService userAuthenticationService;

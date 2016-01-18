@@ -1,20 +1,21 @@
-package com.teamdev.chat.impl.service;
+package com.teamdev.chat.service;
 
 import com.teamdev.chat.dto.*;
 import com.teamdev.chat.entity.ChatRoom;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.ChatRoomException;
-import com.teamdev.chat.hrepository.ChatRoomRepository;
-import com.teamdev.chat.hrepository.UserRepository;
-import com.teamdev.chat.service.ChatRoomService;
+import com.teamdev.chat.repository.ChatRoomRepository;
+import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Inject

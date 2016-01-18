@@ -17,7 +17,7 @@ public class ChatRoom {
     @JoinTable(name = "user_chatroom")
     private Set<User> users = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
     private Set<Message> messages = new LinkedHashSet<>();
 
     public ChatRoom() {

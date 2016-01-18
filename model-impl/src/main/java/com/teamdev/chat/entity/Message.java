@@ -12,15 +12,12 @@ public class Message {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_from_id")
     private User userFrom;
 
     @OneToOne
-    @JoinColumn(name = "user_to_id")
     private User userTo;
 
     @ManyToOne
-    @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
     private Date date;
     private String message;

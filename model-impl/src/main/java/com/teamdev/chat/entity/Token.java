@@ -12,7 +12,6 @@ public class Token {
     private String token;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
     private User user;
     private Date expireTime;
 

@@ -1,6 +1,5 @@
-package com.teamdev.chat.hrepository;
+package com.teamdev.chat.repository;
 
-import com.teamdev.chat.entity.ChatRoom;
 import com.teamdev.chat.entity.Token;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

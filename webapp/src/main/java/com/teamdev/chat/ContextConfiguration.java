@@ -30,8 +30,8 @@ import java.util.Properties;
 @EnableWebMvc
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan({"com.teamdev.chat.impl", "com.teamdev.chat.proxy", "com.teamdev.chat.controller"})
-@EnableJpaRepositories("com.teamdev.chat.hrepository")
+@ComponentScan({"com.teamdev.chat", "com.teamdev.chat.proxy", "com.teamdev.chat.controller"})
+@EnableJpaRepositories("com.teamdev.chat.repository")
 public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @Inject

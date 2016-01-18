@@ -1,4 +1,4 @@
-package com.teamdev.chat.impl.service;
+package com.teamdev.chat.service;
 
 
 import com.teamdev.chat.dto.TokenDTO;
@@ -6,8 +6,7 @@ import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.UserException;
-import com.teamdev.chat.hrepository.UserRepository;
-import com.teamdev.chat.service.UserService;
+import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
