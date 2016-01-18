@@ -5,6 +5,7 @@ import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
 import com.teamdev.chat.request.RegisterUserRequest;
+import com.teamdev.chat.service.TestService;
 import com.teamdev.chat.service.UserManagementService;
 import com.teamdev.chat.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class UserController {
 
     @Inject
     UserService userService;
+
+    @Inject
+    TestService testService;
 
     @Inject
     UserManagementService userManagementService;
@@ -49,6 +53,14 @@ public class UserController {
     @ResponseBody
     UserProfileDTO readUserProfile(@PathVariable long actor, @PathVariable long userId, @RequestParam("token") String token) {
         return userService.readUserProfile(new UserId(actor), new UserId(userId), new TokenDTO(token));
+    }
+
+    @RequestMapping(path = "/hello", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    String readHello() {
+        testService.sayHello();
+        return "hello";
     }
 
 }
