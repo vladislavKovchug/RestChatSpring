@@ -2,9 +2,6 @@ package com.teamdev.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamdev.database.ChatDatabase;
-import com.teamdev.database.Tables;
-import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +11,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,7 +21,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.List;
@@ -52,17 +45,6 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
         converter.setObjectMapper(objectMapper);
         converters.add(converter);
         super.configureMessageConverters(converters);
-    }
-
-
-    @Bean
-    public ChatDatabase chatDatabase() {
-        final ChatDatabase chatDatabase = new ChatDatabase();
-        chatDatabase.createTable(Tables.USERS_TABLE);
-        chatDatabase.createTable(Tables.TOKENS_TABLE);
-        chatDatabase.createTable(Tables.MESSAGES_TABLE);
-        chatDatabase.createTable(Tables.CHAT_ROOMS_TABLE);
-        return chatDatabase;
     }
 
     @Bean
@@ -115,7 +97,6 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
     @PostConstruct
     public void onContextInitialize() {
         sampleDataCreator.createSampleData();
-        System.out.println("spring context was initialized");
     }
 
 }

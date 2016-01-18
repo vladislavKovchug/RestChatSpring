@@ -6,18 +6,16 @@ import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
+import com.teamdev.chat.entity.Token;
+import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.AuthenticationException;
+import com.teamdev.chat.hrepository.TokenRepository;
+import com.teamdev.chat.hrepository.UserRepository;
 import com.teamdev.chat.service.UserAuthenticationService;
-import com.teamdev.chat.repository.TokenRepository;
-import com.teamdev.chat.repository.UserRepository;
-import com.teamdev.database.entity.Token;
-import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import java.security.AccessControlException;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -35,7 +33,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
     public LoginDTO login(String login, String password) {
         HashFunction hf = Hashing.sha256();
         final String passwordHash = hf.newHasher().putString(password, Charsets.UTF_8).hash().toString();
-        final List<User> users = userRepository.findAll();
+        final Iterable<User> users = userRepository.findAll();
         for (User user : users) {
             if (user.getLogin().equals(login) && user.getPasswordHash().equals(passwordHash)) {
 
@@ -44,7 +42,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                     token = UUID.randomUUID().toString();
                 }
 
-                tokenRepository.save(new Token(token, user.getId(), //token should expire from 15 minutes
+                tokenRepository.save(new Token(token, user, //token should expire from 15 minutes
                         new Date(System.currentTimeMillis() + FIFTEEN_MINUTES)));
 
                 return new LoginDTO(user.getId(), token);
@@ -60,7 +58,7 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             throw new AuthenticationException("Access denied.");
         }
 
-        if(userToken.getUserId() != userId.id){
+        if(userToken.getUser().getId() != userId.id){
             throw new AuthenticationException("Access denied.");
         }
 

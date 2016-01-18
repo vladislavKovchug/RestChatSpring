@@ -5,15 +5,15 @@ import com.teamdev.chat.dto.ChatRoomId;
 import com.teamdev.chat.dto.MessageDTO;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
+import com.teamdev.chat.entity.ChatRoom;
+import com.teamdev.chat.entity.Message;
+import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.MessageException;
-import com.teamdev.chat.repository.ChatRoomRepository;
-import com.teamdev.chat.repository.MessageRepository;
-import com.teamdev.chat.repository.UserRepository;
+import com.teamdev.chat.hrepository.ChatRoomRepository;
+import com.teamdev.chat.hrepository.MessageRepository;
+import com.teamdev.chat.hrepository.UserRepository;
 import com.teamdev.chat.service.MessageService;
 import com.teamdev.chat.service.UserAuthenticationService;
-import com.teamdev.database.entity.ChatRoom;
-import com.teamdev.database.entity.Message;
-import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -81,8 +81,7 @@ public class MessageServiceImpl implements MessageService {
             throw new MessageException("Error send message to not joined chat room.");
         }
 
-        final Message message = new Message(user, new Date(), messageText);
-        message.setChatRoom(chatRoom);
+        final Message message = new Message(user, null, chatRoom, new Date(), messageText);
         messageRepository.save(message);
         return new MessageDTO(message.getId(),
                 message.getUserFrom().getId(), message.getUserFrom().getLogin(),
@@ -104,9 +103,7 @@ public class MessageServiceImpl implements MessageService {
         if(!chatRoom.getUsers().contains(userTo)){
             throw new MessageException("Error send message to user that not joined chat room.");
         }
-        final Message message = new Message(userFrom, new Date(), messageText);
-        message.setChatRoom(chatRoom);
-        message.setUserTo(userTo);
+        final Message message = new Message(userFrom, userTo, chatRoom, new Date(), messageText);
         messageRepository.save(message);
         return new MessageDTO(message.getId(),
                 message.getUserFrom().getId(), message.getUserFrom().getLogin(),

@@ -4,15 +4,14 @@ package com.teamdev.chat.impl.service;
 import com.teamdev.chat.dto.TokenDTO;
 import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
+import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.UserException;
-import com.teamdev.chat.repository.UserRepository;
+import com.teamdev.chat.hrepository.UserRepository;
 import com.teamdev.chat.service.UserService;
-import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,8 +31,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Iterable<UserProfileDTO> readAllUsersProfiles(UserId actor, TokenDTO token) {
-        final List<User> allUsers = userRepository.findAll();
-        final ArrayList<UserProfileDTO> userProfileDTOs = new ArrayList<>(allUsers.size());
+        final Iterable<User> allUsers = userRepository.findAll();
+        final ArrayList<UserProfileDTO> userProfileDTOs = new ArrayList<>();
         for (User user : allUsers) {
             userProfileDTOs.add(new UserProfileDTO(user.getId(), user.getLogin(), user.getBirthday()));
         }

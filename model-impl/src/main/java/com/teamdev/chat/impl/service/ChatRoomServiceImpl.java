@@ -1,12 +1,12 @@
 package com.teamdev.chat.impl.service;
 
 import com.teamdev.chat.dto.*;
+import com.teamdev.chat.entity.ChatRoom;
+import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.ChatRoomException;
-import com.teamdev.chat.repository.ChatRoomRepository;
-import com.teamdev.chat.repository.UserRepository;
+import com.teamdev.chat.hrepository.ChatRoomRepository;
+import com.teamdev.chat.hrepository.UserRepository;
 import com.teamdev.chat.service.ChatRoomService;
-import com.teamdev.database.entity.ChatRoom;
-import com.teamdev.database.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -25,8 +25,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public Iterable<ChatRoomDTO> readAllChatRooms(UserId actor, TokenDTO token) {
-        final List<ChatRoom> chatRooms = chatRoomRepository.findAll();
-        List<ChatRoomDTO> result = new ArrayList<>(chatRooms.size());
+        final Iterable<ChatRoom> chatRooms = chatRoomRepository.findAll();
+        List<ChatRoomDTO> result = new ArrayList<>();
         for (ChatRoom chatRoom : chatRooms){
             result.add(new ChatRoomDTO(chatRoom.getId(), chatRoom.getName()));
         }
@@ -36,7 +36,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoomDTO addChatRoom(String chatRoomName) {
-        if(chatRoomRepository.findChatRoomByName(chatRoomName) != null){
+        final ChatRoom chatRoomByName = chatRoomRepository.findChatRoomByName(chatRoomName);
+        if(chatRoomByName != null){
             throw new ChatRoomException("Error with create chat room. Chat room with name " + chatRoomName +
                     " already exists.");
         }
@@ -67,7 +68,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new ChatRoomException("Error with join chat room. User is already in current chat room.");
         }
 
-        user.addChatRoom(chatRoom);
+        user.getChatRooms().add(chatRoom);
         userRepository.save(user);
     }
 
@@ -83,7 +84,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         if(!chatRoom.getUsers().contains(user)){
             throw new ChatRoomException("Error with leave chat room. User is not in chat room.");
         }
-        user.removeChatRoom(chatRoom);
+        user.getChatRooms().remove(chatRoom);
         userRepository.save(user);
     }
 

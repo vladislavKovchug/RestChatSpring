@@ -3,8 +3,6 @@ package com.teamdev.chatimpl.test;
 import com.teamdev.chat.dto.*;
 import com.teamdev.chat.proxy.AuthenticationCheckerAspect;
 import com.teamdev.chat.service.*;
-import com.teamdev.database.ChatDatabase;
-import com.teamdev.database.Tables;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -28,7 +26,7 @@ public abstract class AbstractTest {
     @ComponentScan("com.teamdev.chat.impl")
     static class ContextConfiguration {
 
-        @Bean
+        /*@Bean
         public ChatDatabase chatDatabase(){
             final ChatDatabase chatDatabase = new ChatDatabase();
             chatDatabase.createTable(Tables.USERS_TABLE);
@@ -36,7 +34,7 @@ public abstract class AbstractTest {
             chatDatabase.createTable(Tables.MESSAGES_TABLE);
             chatDatabase.createTable(Tables.CHAT_ROOMS_TABLE);
             return chatDatabase;
-        }
+        }*/
 
         @Bean
         AuthenticationCheckerAspect authenticationCheckerAspect(){

@@ -1,20 +1,28 @@
-package com.teamdev.database.entity;
+package com.teamdev.chat.entity;
 
 
+import javax.persistence.*;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
-public class User implements DatabaseEntity {
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     private String login;
     private String passwordHash;
     private Date birthday;
-    private Set<ChatRoom> chatRooms = new LinkedHashSet<>();
-    private Set<Message> messages = new LinkedHashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_chatroom")
+    private Set<ChatRoom> chatRooms = new HashSet<>();
 
     public User() {
-
     }
 
     public User(String login, String passwordHash, Date birthday) {
@@ -23,12 +31,10 @@ public class User implements DatabaseEntity {
         this.birthday = birthday;
     }
 
-    @Override
     public Long getId() {
         return id;
     }
 
-    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -61,49 +67,10 @@ public class User implements DatabaseEntity {
         return chatRooms;
     }
 
-    public void addChatRoom(ChatRoom chatRoom) {
-        if (chatRooms.add(chatRoom)) {
-            chatRoom.addUser(this);
-        }
-
-    }
-
-    public void removeChatRoom(ChatRoom chatRoom) {
-        if (chatRooms.remove(chatRoom)) {
-            chatRoom.removeUser(this);
-        }
-    }
-
-    public Set<Message> getMessages() {
-        return messages;
-    }
-
-    public void addMessage(Message message) {
-        if (messages.add(message)) {
-            message.setUserTo(this);
-        }
-    }
-
-    public void removeMessage(Message message) {
-        if (messages.remove(message)) {
-            message.setUserTo(null);
-        }
-    }
-
-    @Override
-    public void removeDependencies() {
-        for (Message message : new LinkedHashSet<>(messages)) {
-            message.setUserTo(null);
-        }
-        for (ChatRoom chatRoom : new LinkedHashSet<>(chatRooms)) {
-            chatRoom.removeUser(this);
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof User)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         User user = (User) o;
 
@@ -118,5 +85,4 @@ public class User implements DatabaseEntity {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
-
 }
