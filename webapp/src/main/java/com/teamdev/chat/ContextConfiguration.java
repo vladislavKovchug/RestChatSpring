@@ -2,7 +2,6 @@ package com.teamdev.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.teamdev.chat.proxy.AuthenticationCheckerAspect;
 import com.teamdev.database.ChatDatabase;
 import com.teamdev.database.Tables;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +21,7 @@ import java.util.List;
 @EnableWebMvc
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan({"com.teamdev.chat.impl", "com.teamdev.chat.controller"})
+@ComponentScan({"com.teamdev.chat.impl", "com.teamdev.chat.proxy", "com.teamdev.chat.controller"})
 public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @Inject
@@ -52,11 +51,6 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     SampleDataCreator sampleDataCreator() {
         return new SampleDataCreator();
-    }
-
-    @Bean
-    AuthenticationCheckerAspect authenticationCheckerAspect() {
-        return new AuthenticationCheckerAspect();
     }
 
     @PostConstruct
