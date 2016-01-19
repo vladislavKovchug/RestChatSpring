@@ -11,10 +11,10 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     private User userFrom;
 
-    @OneToOne
+    @ManyToOne
     private User userTo;
 
     @ManyToOne
@@ -22,7 +22,7 @@ public class Message {
     private Date date;
     private String message;
 
-    public Message() {
+    /*package*/ Message() {
     }
 
     public Message(User userFrom, User userTo, ChatRoom chatRoom, Date date, String message) {

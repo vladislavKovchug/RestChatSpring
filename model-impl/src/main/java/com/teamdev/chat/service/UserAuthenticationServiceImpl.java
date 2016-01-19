@@ -14,10 +14,12 @@ import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class UserAuthenticationServiceImpl implements UserAuthenticationService {
 
     public static final int FIFTEEN_MINUTES = 60 * 15 * 1000;
@@ -41,8 +43,9 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
                     token = UUID.randomUUID().toString();
                 }
 
-                tokenRepository.save(new Token(token, user, //token should expire from 15 minutes
-                        new Date(System.currentTimeMillis() + FIFTEEN_MINUTES)));
+                final Token newToken = new Token(token, user, //token should expire from 15 minutes
+                        new Date(System.currentTimeMillis() + FIFTEEN_MINUTES));
+                tokenRepository.save(newToken);
 
                 return new LoginDTO(user.getId(), token);
             }

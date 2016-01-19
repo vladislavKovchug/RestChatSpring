@@ -27,6 +27,30 @@ public class MessageServiceTest extends AbstractTest {
     }
 
     @Test
+    public void testPostingTwoMessagesToChatRoom(){
+        chatRoomService.joinChatRoom(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id),
+                new TokenDTO(testUser.token));
+
+
+        messageService.sendMessage(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id), "test message1",
+                new TokenDTO(testUser.token));
+        messageService.sendMessage(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id), "test message2",
+                new TokenDTO(testUser.token));
+
+        final Iterable<MessageDTO> messageDTOs = messageService.readChatRoomMessages(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id), 0,
+                new TokenDTO(testUser.token));
+
+        chatRoomService.leaveChatRoom(new UserId(testUser.userId), new ChatRoomId(testChatRoom.id),
+                new TokenDTO(testUser.token));
+
+        long messagesCount = 0;
+        for (MessageDTO messageDTO : messageDTOs) {
+            messagesCount++;
+        }
+        Assert.assertTrue("error there is less than 2 messages in chatroom", messagesCount >= 2);
+    }
+
+    @Test
     public void testFailsPostingMessageToNotExistingChatRoom(){
         try {
             messageService.sendMessage(new UserId(testUser.userId), new ChatRoomId(-1), "test message",
@@ -109,51 +133,4 @@ public class MessageServiceTest extends AbstractTest {
         return lastMessage;
     }
 
-/*
-    private RegisterUserDTO registerUserDTO = new RegisterUserDTO("ivan", "123456", 123, new Date(1700, 10, 10));
-    private UserProfileDTO testUser;
-    private String testUserToken = "";
-    private ChatRoomDTO chatRoom;
-    private boolean initialize = true;
-
-
-    private ChatRoomDTO readLastChatRoom(String token) {
-        final Iterable<ChatRoomDTO> chatRoomDTOs = chatRoomService.readAllChatRooms(token);
-        ChatRoomDTO lastChatRoom = null;
-        for (ChatRoomDTO chatRoomDTO : chatRoomDTOs) {
-            lastChatRoom = chatRoomDTO;
-        }
-        return lastChatRoom;
-    }
-
-
-
-    private String RegisterAndLoginAsTestUser() {
-        userManagementService.register(registerUserDTO);
-        final String token = userAuthenticationService.login(registerUserDTO.login, registerUserDTO.password);
-        testUser = userService.readCurrentUserProfile(token);
-
-        return token;
-    }
-
-    @Before
-    public void before(){
-        if(initialize){
-            chatRoomService.addChatRoom("chat_testing");
-            initialize = false;
-        }
-
-        testUserToken = RegisterAndLoginAsTestUser();
-        chatRoom = readLastChatRoom(testUserToken);
-    }
-
-    @After
-    public void after(){
-        userManagementService.deleteUser(testUser.id);
-        chatRoomService.deleteChatRoom("chat_testing");
-        testUserToken = "";
-    }
-
-
-*/
 }

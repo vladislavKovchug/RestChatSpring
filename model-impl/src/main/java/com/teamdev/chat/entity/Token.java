@@ -11,11 +11,11 @@ public class Token {
     private Long id;
     private String token;
 
-    @OneToOne
+    @ManyToOne
     private User user;
     private Date expireTime;
 
-    public Token() {
+    /*package*/ Token() {
     }
 
     public Token(String token, User user, Date expireTime) {

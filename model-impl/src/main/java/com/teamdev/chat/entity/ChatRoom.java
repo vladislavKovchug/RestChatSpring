@@ -13,14 +13,14 @@ public class ChatRoom {
     private Long id;
     private String name;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "user_chatroom")
     private Set<User> users = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.REMOVE)
     private Set<Message> messages = new LinkedHashSet<>();
 
-    public ChatRoom() {
+    /*package*/ ChatRoom() {
     }
 
     public ChatRoom(String name) {

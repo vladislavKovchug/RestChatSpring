@@ -27,11 +27,11 @@ public class User {
     @OneToMany(mappedBy = "userTo", cascade = CascadeType.REFRESH)
     private Set<Message> privateMessages;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.REFRESH)
     @JoinTable(name = "user_chatroom")
     private Set<ChatRoom> chatRooms = new HashSet<>();
 
-    public User() {
+    /*package*/ User() {
     }
 
     public User(String login, String passwordHash, Date birthday) {

@@ -3,7 +3,7 @@ package com.teamdev.chat.service;
 import com.teamdev.chat.dto.*;
 import com.teamdev.chat.entity.ChatRoom;
 import com.teamdev.chat.entity.User;
-import com.teamdev.chat.exception.ChatRoomException;
+import com.teamdev.chat.exception.ChatException;
 import com.teamdev.chat.repository.ChatRoomRepository;
 import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public ChatRoomDTO addChatRoom(String chatRoomName) {
         final ChatRoom chatRoomByName = chatRoomRepository.findChatRoomByName(chatRoomName);
         if(chatRoomByName != null){
-            throw new ChatRoomException("Error with create chat room. Chat room with name " + chatRoomName +
+            throw new ChatException("Error with create chat room. Chat room with name " + chatRoomName +
                     " already exists.");
         }
         final ChatRoom chatRoom = new ChatRoom(chatRoomName);
@@ -51,7 +51,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void deleteChatRoom(ChatRoomId chatRoomId) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if(chatRoom == null){
-            throw new ChatRoomException("Error delete not existed chat room with id " + Long.toString(chatRoomId.id));
+            throw new ChatException("Error delete not existed chat room with id " + Long.toString(chatRoomId.id));
         }
         chatRoomRepository.delete(chatRoom);
     }
@@ -60,13 +60,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new ChatRoomException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
         final User user = userRepository.findOne(actor.id);
         if(chatRoom.getUsers().contains(user)){
-            throw new ChatRoomException("Error with join chat room. User is already in current chat room.");
+            throw new ChatException("Error with join chat room. User is already in current chat room.");
         }
 
         user.getChatRooms().add(chatRoom);
@@ -77,13 +77,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void leaveChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new ChatRoomException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatException("Error with leave chat room. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 
         final User user = userRepository.findOne(actor.id);
         if(!chatRoom.getUsers().contains(user)){
-            throw new ChatRoomException("Error with leave chat room. User is not in chat room.");
+            throw new ChatException("Error with leave chat room. User is not in chat room.");
         }
         user.getChatRooms().remove(chatRoom);
         userRepository.save(user);
@@ -93,7 +93,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public Iterable<UserProfileDTO> readChatRoomUserList(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
-            throw new ChatRoomException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId.id) +
+            throw new ChatException("Error with read chat room users. Chat room with id " + Long.toString(chatRoomId.id) +
                     " not found.");
         }
 

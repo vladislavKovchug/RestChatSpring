@@ -2,6 +2,7 @@ package com.teamdev.chat;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -36,6 +37,8 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @Inject
     SampleDataCreator sampleDataCreator;
+
+    private static final Logger LOGGER = Logger.getLogger(ContextConfiguration.class);
 
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -80,9 +83,9 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
         return txManager;
     }
 
-    Properties additionalProperties() {
+    private Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         return properties;
     }
@@ -95,6 +98,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
     @PostConstruct
     public void onContextInitialize() {
         sampleDataCreator.createSampleData();
+        LOGGER.trace("context was initialized");
     }
 
 }

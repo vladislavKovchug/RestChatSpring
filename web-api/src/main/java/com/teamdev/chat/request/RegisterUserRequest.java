@@ -12,30 +12,19 @@ public class RegisterUserRequest {
         this.birthday = birthday;
     }
 
-    public RegisterUserRequest() {
+    /*package*/ RegisterUserRequest() {
     }
 
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public long getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(long birthday) {
-        this.birthday = birthday;
-    }
 }

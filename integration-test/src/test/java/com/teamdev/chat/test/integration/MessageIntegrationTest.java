@@ -62,6 +62,45 @@ public class MessageIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    public void testPostTwoPublicMessages() {
+        final LoginDTO loginDTO = loginAsTestUser();
+        final String message = "hello";
+
+        final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(loginDTO);
+        if (!chatRoomDTOs.iterator().hasNext()) {
+            Assert.fail("No chat rooms to join");
+        }
+
+        final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
+
+        final HttpUriRequest joinChatRoomRequest = addJsonParameters(
+                RequestBuilder.put(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId),
+                new TokenRequest(loginDTO.token)).build();
+
+        doRequestWithAssert(joinChatRoomRequest);
+
+        final HttpUriRequest postMessageRequest =
+                addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id + "/" + loginDTO.userId),
+                        new PostMessageRequest(message, loginDTO.token)).build();
+
+        doRequestWithAssert(postMessageRequest);
+        doRequestWithAssert(postMessageRequest);
+
+        boolean messageInChatRoom = false;
+        long messagesCount = 0;
+        final JsonArray messages = readChatRoomMessages(loginDTO, chatRoom.id);
+        for (JsonElement jsonElement : messages) {
+            messagesCount++;
+        }
+        Assert.assertTrue("Error there is less than 2 messages in chatroom", messagesCount >= 2);
+
+        final HttpUriRequest leaveChatRoomRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId)
+                .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
+                .build();
+        doRequestWithAssert(leaveChatRoomRequest);
+    }
+
+    @Test
     public void testPostPrivateMessage() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
         final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");

@@ -4,6 +4,7 @@ import com.google.gson.*;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.LoginRequest;
+import com.teamdev.chat.response.ErrorResponse;
 import com.teamdev.chat.test.exception.HttpRequestFailedException;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.StatusLine;
@@ -35,7 +36,7 @@ public abstract class IntegrationTest {
         final CloseableHttpClient httpClient = HttpClients.createDefault();
         final CloseableHttpResponse response = httpClient.execute(request);
 
-        if (response.getStatusLine().getStatusCode() != 200) {
+        if (response.getStatusLine().getStatusCode() != 200 && response.getStatusLine().getStatusCode() != 500) {
             throw new HttpRequestFailedException(response.getStatusLine());
         }
 
@@ -56,9 +57,9 @@ public abstract class IntegrationTest {
         return result;
     }
 
-    protected StatusLine doFailRequest(HttpUriRequest request){
+    protected StatusLine doFailRequest(HttpUriRequest request) {
         try {
-            final String s = doRequest(request);
+            doRequest(request);
             Assert.fail("Error, expected exception throw.");
         } catch (HttpRequestFailedException e) {
             return e.getStatusLine();
@@ -66,6 +67,17 @@ public abstract class IntegrationTest {
             Assert.fail("Error while request to URL " + CHAT_URL + "/chats" + " :" + e.getMessage());
         }
         return null;
+    }
+
+    protected ErrorResponse doErrorRequest(HttpUriRequest request) {
+        String response = "";
+        try {
+            response = doRequest(request);
+        } catch (IOException e) {
+            Assert.fail("Error while request to URL " + request.getURI().toString() + " :" + e.getMessage());
+        }
+        final JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+        return new ErrorResponse(jsonObject.get("errorMessage").getAsString());
     }
 
     protected RequestBuilder addJsonParameters(RequestBuilder builder, Object parameters) {

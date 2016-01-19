@@ -7,14 +7,10 @@ public class AddChatRoomRequest {
         this.name = name;
     }
 
-    public AddChatRoomRequest() {
+    /*package*/ AddChatRoomRequest() {
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

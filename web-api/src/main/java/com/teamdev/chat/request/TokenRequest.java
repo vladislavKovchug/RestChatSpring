@@ -7,14 +7,11 @@ public class TokenRequest {
         this.token = token;
     }
 
-    public TokenRequest() {
+    /*package*/ TokenRequest() {
     }
 
     public String getToken() {
         return token;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

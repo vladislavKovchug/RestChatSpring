@@ -4,8 +4,6 @@ package com.teamdev.chat;
 import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.RegisterUserDTO;
 import com.teamdev.chat.service.ChatRoomService;
-import com.teamdev.chat.service.MessageService;
-import com.teamdev.chat.service.UserAuthenticationService;
 import com.teamdev.chat.service.UserManagementService;
 
 import javax.inject.Inject;
@@ -14,16 +12,10 @@ import java.util.Date;
 public class SampleDataCreator {
 
     @Inject
-    UserManagementService userManagementService;
+    private UserManagementService userManagementService;
 
     @Inject
-    ChatRoomService chatRoomService;
-
-    @Inject
-    UserAuthenticationService userAuthenticationService;
-
-    @Inject
-    MessageService messageService;
+    private ChatRoomService chatRoomService;
 
     public void createSampleData(){
         userManagementService.register(new RegisterUserDTO("user1", "12345", new Date()));
