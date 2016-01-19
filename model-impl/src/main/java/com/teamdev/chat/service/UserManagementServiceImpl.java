@@ -7,8 +7,10 @@ import com.google.common.hash.Hashing;
 import com.teamdev.chat.dto.RegisterUserDTO;
 import com.teamdev.chat.dto.UserId;
 import com.teamdev.chat.dto.UserProfileDTO;
+import com.teamdev.chat.entity.Message;
 import com.teamdev.chat.entity.User;
 import com.teamdev.chat.exception.UserException;
+import com.teamdev.chat.repository.MessageRepository;
 import com.teamdev.chat.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,9 @@ public class UserManagementServiceImpl implements UserManagementService {
 
     @Inject
     private UserRepository userRepository;
+
+    @Inject
+    private MessageRepository messageRepository;
 
     @Inject
     private UserAuthenticationService userAuthenticationService;
@@ -45,6 +50,15 @@ public class UserManagementServiceImpl implements UserManagementService {
             throw new UserException("User with id " + Long.toString(userId.id) + " does not exists.");
         }
 
+        for(Message message: user.getSentMessages()){
+            message.setUserFrom(null);
+        }
+
+        for(Message message: user.getPrivateMessages()){
+            messageRepository.delete(message);
+        }
+
         userRepository.delete(user.getId());
     }
+
 }

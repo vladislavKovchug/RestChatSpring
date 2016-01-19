@@ -71,6 +71,7 @@ public class MessageServiceTest extends AbstractTest {
         chatRoomService.leaveChatRoom(new UserId(ivan2.userId), new ChatRoomId(testChatRoom.id),
                 new TokenDTO(ivan2.token));
 
+        userManagementService.deleteUser(new UserId(ivan2.userId));
         Assert.assertEquals("last message should be from Test user", testUserProfile.id, lastMessage.fromUserId);
         Assert.assertEquals("last message should be from Test user", testUserProfile.name, lastMessage.fromUserName);
         Assert.assertEquals("last message should be To user with id " + Long.toString(receiverUser.id),

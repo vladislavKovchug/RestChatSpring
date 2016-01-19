@@ -18,10 +18,14 @@ public class User {
     private String passwordHash;
     private Date birthday;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id")
-    private Token token;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Set<Token> tokens;
 
+    @OneToMany(mappedBy = "userFrom", cascade = CascadeType.REFRESH)
+    private Set<Message> sentMessages;
+
+    @OneToMany(mappedBy = "userTo", cascade = CascadeType.REFRESH)
+    private Set<Message> privateMessages;
 
     @ManyToMany
     @JoinTable(name = "user_chatroom")
@@ -74,6 +78,14 @@ public class User {
 
     public void setChatRooms(Set<ChatRoom> chatRooms) {
         this.chatRooms = chatRooms;
+    }
+
+    public Set<Message> getSentMessages() {
+        return sentMessages;
+    }
+
+    public Set<Message> getPrivateMessages() {
+        return privateMessages;
     }
 
     @Override
