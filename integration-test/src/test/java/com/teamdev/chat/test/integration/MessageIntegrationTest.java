@@ -148,12 +148,6 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         final ChatRoomDTO chatRoom = chatRoomDTOs.iterator().next();
 
-        final HttpUriRequest joinChatRoomRequest = addJsonParameters(
-                RequestBuilder.put(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId),
-                new TokenRequest(loginDTO.token)).build();
-
-        doRequestWithAssert(joinChatRoomRequest);
-
         final HttpUriRequest postMessageRequest =
                 addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id + "/" + loginDTO.userId),
                         new PostMessageRequest("some message", loginDTO.token)).build();

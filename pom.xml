@@ -13,6 +13,7 @@
         <module>model</module>
         <module>model-impl</module>
         <module>integration-test</module>
+        <module>web-api</module>
     </modules>
 
     <properties>

@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>restChatSpring</groupId>
-            <artifactId>webapp</artifactId>
+            <artifactId>web-api</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

@@ -58,7 +58,7 @@ public abstract class IntegrationTest {
 
     protected StatusLine doFailRequest(HttpUriRequest request){
         try {
-            doRequest(request);
+            final String s = doRequest(request);
             Assert.fail("Error, expected exception throw.");
         } catch (HttpRequestFailedException e) {
             return e.getStatusLine();
