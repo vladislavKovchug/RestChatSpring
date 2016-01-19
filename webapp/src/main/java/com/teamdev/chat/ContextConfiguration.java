@@ -65,10 +65,10 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.hsqldb.jdbcDriver");
-        dataSource.setUrl("jdbc:hsqldb:mem:testdb");
-        dataSource.setUsername( "sa" );
-        dataSource.setPassword( "" );
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        dataSource.setUrl("jdbc:mysql://localhost/chat");
+        dataSource.setUsername( "root" );
+        dataSource.setPassword( "toor" );
         return dataSource;
     }
 
@@ -83,7 +83,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
     Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.HSQLDialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         return properties;
     }
 
