@@ -84,8 +84,10 @@ public class MessageServiceImpl implements MessageService {
         final Message message = new Message(user, null, chatRoom, new Date(), messageText);
 
         messageRepository.save(message);
+        final Long id = message.getUserFrom() == null ? -1 : message.getUserFrom().getId();
+        final String login = message.getUserFrom() == null ? "deleted user" : message.getUserFrom().getLogin();
         return new MessageDTO(message.getId(),
-                message.getUserFrom().getId(), message.getUserFrom().getLogin(),
+                id, login,
                 (long)-1, "",
                 message.getMessage(), false, message.getDate());
     }
@@ -106,9 +108,14 @@ public class MessageServiceImpl implements MessageService {
         }
         final Message message = new Message(userFrom, userTo, chatRoom, new Date(), messageText);
         messageRepository.save(message);
+        final Long idFrom = message.getUserFrom() == null ? -1 : message.getUserFrom().getId();
+        final String loginFrom = message.getUserFrom() == null ? "deleted user" : message.getUserFrom().getLogin();
+        final Long idTo = message.getUserTo() == null ? -1 : message.getUserTo().getId();
+        final String loginTo = message.getUserTo() == null ? "deleted user" : message.getUserTo().getLogin();
+
         return new MessageDTO(message.getId(),
-                message.getUserFrom().getId(), message.getUserFrom().getLogin(),
-                message.getUserTo().getId(), message.getUserTo().getLogin(),
+                idFrom, loginFrom,
+                idTo, loginTo,
                 message.getMessage(), true, message.getDate());
     }
 
