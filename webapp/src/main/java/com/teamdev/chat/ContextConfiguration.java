@@ -36,7 +36,7 @@ import java.util.Properties;
 public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @Inject
-    SampleDataCreator sampleDataCreator;
+    private SampleDataCreator sampleDataCreator;
 
     private static final Logger LOGGER = Logger.getLogger(ContextConfiguration.class);
 

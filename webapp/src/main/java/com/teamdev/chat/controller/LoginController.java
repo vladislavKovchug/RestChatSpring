@@ -15,7 +15,7 @@ import javax.inject.Inject;
 public class LoginController {
 
     @Inject
-    UserAuthenticationService userAuthenticationService;
+    private UserAuthenticationService userAuthenticationService;
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     public

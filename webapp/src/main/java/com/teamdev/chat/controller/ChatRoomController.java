@@ -14,7 +14,7 @@ import javax.inject.Inject;
 public class ChatRoomController {
 
     @Inject
-    ChatRoomService chatRoomService;
+    private ChatRoomService chatRoomService;
 
     @RequestMapping(path = "/chats/{userId}", method = RequestMethod.GET)
     public

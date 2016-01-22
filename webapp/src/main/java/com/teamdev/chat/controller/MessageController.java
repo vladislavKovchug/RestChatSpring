@@ -15,7 +15,7 @@ import javax.inject.Inject;
 public class MessageController {
 
     @Inject
-    MessageService messageService;
+    private MessageService messageService;
 
     @RequestMapping(path = "/messages/{chatId}/{userId}/{time}", method = RequestMethod.GET)
     public

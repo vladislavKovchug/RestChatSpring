@@ -18,10 +18,10 @@ import java.util.Date;
 public class UserController {
 
     @Inject
-    UserService userService;
+    private UserService userService;
 
     @Inject
-    UserManagementService userManagementService;
+    private UserManagementService userManagementService;
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
     public
