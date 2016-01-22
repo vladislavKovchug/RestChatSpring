@@ -9,7 +9,7 @@ import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.PostMessageRequest;
 import com.teamdev.chat.request.TokenRequest;
-import org.apache.http.StatusLine;
+import com.teamdev.chat.response.ErrorResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -158,9 +158,9 @@ public class MessageIntegrationTest extends IntegrationTest {
                 RequestBuilder.get(CHAT_URL + "/messages/-1/" + loginDTO.userId + "/0")
                         .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
                         .build();
-        final StatusLine statusLine = doFailRequest(getMessagesRequest);
+        final ErrorResponse errorResponse = doErrorRequest(getMessagesRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -171,9 +171,9 @@ public class MessageIntegrationTest extends IntegrationTest {
                 addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/-1/" + loginDTO.userId),
                         new PostMessageRequest("some message", loginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(postMessageRequest);
+        final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on post public message to not existed chat room.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on post public message to not existed chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -191,9 +191,9 @@ public class MessageIntegrationTest extends IntegrationTest {
                 addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/" + chatRoom.id + "/" + loginDTO.userId),
                         new PostMessageRequest("some message", loginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(postMessageRequest);
+        final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on post public message to not joined chat room.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on post public message to not joined chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -206,9 +206,9 @@ public class MessageIntegrationTest extends IntegrationTest {
                                 "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
                         new PostMessageRequest("some message", testUserLoginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(postMessageRequest);
+        final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -228,9 +228,9 @@ public class MessageIntegrationTest extends IntegrationTest {
                                 "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
                         new PostMessageRequest("some message", testUserLoginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(postMessageRequest);
+        final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -255,14 +255,14 @@ public class MessageIntegrationTest extends IntegrationTest {
                                 "/" + testUserLoginDTO.userId + "/" + secondUserLoginDTO.userId),
                         new PostMessageRequest("some message", testUserLoginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(postMessageRequest);
+        final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
         final HttpUriRequest leaveChatRoomRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + chatRoom.id + "/" + testUserLoginDTO.userId)
                 .addParameter(TOKEN_PARAMETER_NAME, testUserLoginDTO.token)
                 .build();
         doRequestWithAssert(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
     }
 
     private JsonArray readChatRoomMessages(LoginDTO loginDTO, long chatRoomId) {

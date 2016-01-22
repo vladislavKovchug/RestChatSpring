@@ -8,7 +8,7 @@ import com.teamdev.chat.dto.ChatRoomDTO;
 import com.teamdev.chat.dto.LoginDTO;
 import com.teamdev.chat.request.AddChatRoomRequest;
 import com.teamdev.chat.request.TokenRequest;
-import org.apache.http.StatusLine;
+import com.teamdev.chat.response.ErrorResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
 import org.junit.Assert;
@@ -72,7 +72,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         String response = doRequestWithAssert(createChatRoomsRequest);
 
-        final StatusLine statusLine = doFailRequest(createChatRoomsRequest);
+        final ErrorResponse errorResponse = doErrorRequest(createChatRoomsRequest);
 
         final JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
         final long id = jsonObject.get("id").getAsLong();
@@ -82,7 +82,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         doRequestWithAssert(deleteChatRoomsRequest);
 
-        Assert.assertEquals("Error, wrong status code on create existing chatRoom.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error, wrong status code on create existing chatRoom.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -122,9 +122,9 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
         final HttpUriRequest deleteChatRoomsRequest = RequestBuilder.delete(CHAT_URL + "/chats/-1")
                 .build();
 
-        final StatusLine statusLine = doFailRequest(deleteChatRoomsRequest);
+        final ErrorResponse errorResponse = doErrorRequest(deleteChatRoomsRequest);
 
-        Assert.assertEquals("Error wrong status code on delete not existing user.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on delete not existing user.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -184,8 +184,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 RequestBuilder.put(CHAT_URL + "/chats/-1/" + loginDTO.userId),
                 new TokenRequest(loginDTO.token)).build();
 
-        final StatusLine statusLine = doFailRequest(joinChatRoomRequest);
-        Assert.assertEquals("Error wrong status code on join not existed chat room.", 500, statusLine.getStatusCode());
+        final ErrorResponse errorResponse = doErrorRequest(joinChatRoomRequest);
+        Assert.assertEquals("Error wrong status code on join not existed chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -203,7 +203,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 new TokenRequest(loginDTO.token)).build();
 
         doRequestWithAssert(joinChatRoomRequest);
-        final StatusLine statusLine = doFailRequest(joinChatRoomRequest);
+        final ErrorResponse errorResponse = doErrorRequest(joinChatRoomRequest);
 
         final HttpUriRequest leaveChatRoomRequest = RequestBuilder.delete(CHAT_URL + "/chats/" + chatRoom.id + "/" + loginDTO.userId)
                 .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
@@ -211,7 +211,7 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         doRequestWithAssert(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on join joined chat room.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on join joined chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -222,8 +222,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
                 .build();
 
-        final StatusLine statusLine = doFailRequest(leaveChatRoomRequest);
-        Assert.assertEquals("Error wrong status code on leave not existed chat room.", 500, statusLine.getStatusCode());
+        final ErrorResponse errorResponse = doErrorRequest(leaveChatRoomRequest);
+        Assert.assertEquals("Error wrong status code on leave not existed chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -240,9 +240,9 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
                 .build();
 
-        final StatusLine statusLine = doFailRequest(leaveChatRoomRequest);
+        final ErrorResponse errorResponse = doErrorRequest(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on leave not joined chat room.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on leave not joined chat room.", "", errorResponse.errorMessage);
     }
 
     @Test
@@ -252,9 +252,9 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 .addParameter(TOKEN_PARAMETER_NAME, loginDTO.token)
                 .build();
 
-        final StatusLine statusLine = doFailRequest(getChatRoomUsersRequest);
+        final ErrorResponse errorResponse = doErrorRequest(getChatRoomUsersRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room user list.", 500, statusLine.getStatusCode());
+        Assert.assertEquals("Error wrong status code on read not existed chat room user list.", "", errorResponse.errorMessage);
     }
 
 }
