@@ -1,14 +1,13 @@
-function LoginService(eventBus) {
+function LoginController(eventBus, tokenContainer) {
 
-    var restService = new RestService(eventBus);
+    var loginService = new LoginService(eventBus);
 
     eventBus.registerConsumer(EventBusMessages.LOGIN_USER, function (loginDto) {
-        restService.post('/chat/login', loginDto, onLoginSuccess, onLoginError);
+        loginService.login(loginDto, onLoginSuccess, onLoginError);
     });
 
     function onLoginSuccess(data) {
-        ChatRoomStorage.isLoggedIn = true;
-        ChatRoomStorage.token = data;
+        tokenContainer.token = data;
         eventBus.sendMessage(EventBusMessages.USER_LOGGED_IN);
     }
 
@@ -16,6 +15,10 @@ function LoginService(eventBus) {
         alert(errorMessage);
     }
 
+    return {
+        "init" : function(){},
+        "destroy" : function(){}
+    };
 }
 
 function LoginView(eventBus, element) {
@@ -27,5 +30,18 @@ function LoginView(eventBus, element) {
 
     function onLoginBtnClick() {
         eventBus.sendMessage(EventBusMessages.LOGIN_USER, {"login": loginInput.val(), "password": passwordInput.val()});
+    }
+}
+
+function LoginService(eventBus){
+
+    var restService = new RestService(eventBus);
+
+    function _login(loginData, callback, errorHandler){
+        restService.post('/chat/login', loginData, callback, errorHandler, errorHandler);
+    }
+
+    return {
+        "login" : _login
     }
 }

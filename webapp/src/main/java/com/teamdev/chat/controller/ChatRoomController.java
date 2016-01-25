@@ -38,8 +38,9 @@ public class ChatRoomController {
 
     @ResponseStatus(value = HttpStatus.OK)
     @RequestMapping(path = "/chats/{chatId}/{userId}", method = RequestMethod.PUT)
-    public void joinChatRoom(@PathVariable long chatId, @PathVariable long userId, @RequestBody TokenRequest token) {
-        chatRoomService.joinChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token.getToken()));
+    @ResponseBody
+    public ChatRoomDTO joinChatRoom(@PathVariable long chatId, @PathVariable long userId, @RequestBody TokenRequest token) {
+        return chatRoomService.joinChatRoom(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token.getToken()));
     }
 
     @ResponseStatus(value = HttpStatus.OK)

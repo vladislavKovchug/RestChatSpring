@@ -57,7 +57,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
+    public ChatRoomDTO joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token) {
         final ChatRoom chatRoom = chatRoomRepository.findOne(chatRoomId.id);
         if (chatRoom == null) {
             throw new ChatException("Error with join chat room. Chat room with id " + Long.toString(chatRoomId.id) +
@@ -71,6 +71,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         user.getChatRooms().add(chatRoom);
         userRepository.save(user);
+        return new ChatRoomDTO(chatRoom.getId(), chatRoom.getName());
     }
 
     @Override

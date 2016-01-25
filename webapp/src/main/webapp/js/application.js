@@ -1,14 +1,17 @@
 $(function () {
 
+    var tokenContainer = new TokenContainer();
     var eventBus = new EventBus('chatEventBus');
-    var chatService = new ChatService(eventBus);
-    var loginService = new LoginService(eventBus);
 
-    new PageController(eventBus)
-        .setPage('#login', LoginView, 'login.html')
-        .setPage('#register', RegisterView, 'register.html')
-        .setPage('#chat', ChatView, 'chat.html')
-        .setDefault(LoginView, 'login.html')
+    var chatController = new ChatController(eventBus, tokenContainer);
+    var loginController = new LoginController(eventBus, tokenContainer);
+    var registerController = new RegisterController(eventBus);
+
+    new PageManager(eventBus)
+        .setPage('#login', LoginView, loginController, 'login.html')
+        .setPage('#register', RegisterView, registerController, 'register.html')
+        .setPage('#chat', ChatView, chatController,'chat.html')
+        .setDefault(LoginView, loginController, 'login.html')
         .view();
 
     ApplicationView(eventBus, $('#application-container'));

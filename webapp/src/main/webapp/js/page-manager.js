@@ -1,11 +1,11 @@
-function PageController(eventBus) {
+function PageManager(eventBus) {
     var pages = [];
     var defaultPage = null;
-    var lastPageHash = null;
+    var currentPageController = null;
 
     $(window).bind('hashchange', _viewPage);
 
-    pageController = {
+    pageManager = {
         "setDefault": _setDefault,
         "setPage": _setPage,
         "view": _viewPage
@@ -24,29 +24,34 @@ function PageController(eventBus) {
 
         $.get(page.template, function (data) {
             var content = $($.parseHTML(data));
+            if(currentPageController){
+                currentPageController.destroy();
+                currentPageController = page.controller(eventBus);
+            }
             page.view(eventBus, content);
-            eventBus.sendMessage(EventBusMessages.PAGE_CLOSED, hash);
             eventBus.sendMessage(EventBusMessages.UPDATE_APPLICATION_VIEW, content);
         });
 
         console.log(hash);
     }
 
-    function _setDefault(view, template) {
+    function _setDefault(view, controller, template) {
         defaultPage = {
             "view": view,
+            "controller" : controller,
             "template": template
         };
-        return pageController;
+        return pageManager;
     }
 
-    function _setPage(path, view, template) {
+    function _setPage(path, view, controller, template) {
         pages[path] = {
             "view": view,
+            "controller" : controller,
             "template": template
         };
-        return pageController;
+        return pageManager;
     }
 
-    return pageController;
+    return pageManager;
 }

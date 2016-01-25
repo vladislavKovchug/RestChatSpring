@@ -30,4 +30,10 @@ public class LoginController {
         userAuthenticationService.logout(new UserId(userId), new TokenDTO(token));
     }
 
+    @ResponseStatus(value = HttpStatus.OK)
+    @RequestMapping(path = "/logout/{userId}", method = RequestMethod.GET)
+    public void isLoggedIn(@PathVariable long userId, @RequestParam("token") String token) {
+        userAuthenticationService.logout(new UserId(userId), new TokenDTO(token));
+    }
+
 }

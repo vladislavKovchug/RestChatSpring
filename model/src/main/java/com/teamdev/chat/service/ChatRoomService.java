@@ -10,7 +10,7 @@ public interface ChatRoomService {
 
     Iterable<ChatRoomDTO> readAllChatRooms(UserId actor, TokenDTO token);
 
-    void joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
+    ChatRoomDTO joinChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
 
     void leaveChatRoom(UserId actor, ChatRoomId chatRoomId, TokenDTO token);
 

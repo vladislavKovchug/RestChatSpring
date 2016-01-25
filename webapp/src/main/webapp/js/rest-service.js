@@ -1,15 +1,15 @@
 function RestService(eventBus) {
 
-    var _get = function (url, callback, error) {
+    var _get = function (url, callback, error, loginError) {
         $.ajax({
             url: url,
             type: 'GET',
-            statusCode: buildStatusCode(error),
+            statusCode: buildStatusCode(error, loginError),
             success: callback
         });
     };
 
-    var _post = function (url, data, callback, error) {
+    var _post = function (url, data, callback, error, loginError) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -19,12 +19,12 @@ function RestService(eventBus) {
                 'Content-Type': 'application/json'
             },
             dataType: 'json',
-            statusCode: buildStatusCode(error),
+            statusCode: buildStatusCode(error, loginError),
             success: callback
         });
     };
 
-    var _put = function (url, data, callback, error) {
+    var _put = function (url, data, callback, error, loginError) {
         $.ajax({
             url: url,
             type: 'PUT',
@@ -34,27 +34,26 @@ function RestService(eventBus) {
                 'Content-Type': 'application/json'
             },
             dataType: 'json',
-            statusCode: buildStatusCode(error),
+            statusCode: buildStatusCode(error, loginError),
             success: callback
         });
     };
 
-    var _delete = function (url, callback, error) {
+    var _delete = function (url, callback, error, loginError) {
         $.ajax({
             url: url,
             type: 'DELETE',
-            statusCode: buildStatusCode(error),
+            statusCode: buildStatusCode(error, loginError),
             success: callback
         });
     };
 
-    function buildStatusCode(errorHandler){
+    function buildStatusCode(errorHandler, loginErrorHandler){
         return {
             403: function (data) {
                 var errorMessage = JSON.parse(data.responseText).errorMessage;
-                eventBus.sendMessage(EventBusMessages.AUTHENTICATION_ERROR, errorMessage);
-                if(errorHandler){
-                    errorHandler(errorMessage);
+                if(loginErrorHandler){
+                    loginErrorHandler(errorMessage);
                 }
             },
             500: function (data) {
