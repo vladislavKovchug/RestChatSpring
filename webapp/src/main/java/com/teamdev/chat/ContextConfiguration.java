@@ -69,7 +69,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost/chat");
         dataSource.setUsername( "root" );
-        dataSource.setPassword( "toor" );
+        dataSource.setPassword( "vertrigo" );
         return dataSource;
     }
 
@@ -95,7 +95,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @PostConstruct
     public void onContextInitialize() {
-        sampleDataCreator.createSampleData();
+        //sampleDataCreator.createSampleData();
         LOGGER.trace("context was initialized");
     }
 
