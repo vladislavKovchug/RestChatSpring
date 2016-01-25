@@ -83,7 +83,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     private Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
+        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         return properties;
     }
@@ -95,7 +95,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
 
     @PostConstruct
     public void onContextInitialize() {
-        //sampleDataCreator.createSampleData();
+        sampleDataCreator.createSampleData();
         LOGGER.trace("context was initialized");
     }
 

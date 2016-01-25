@@ -82,7 +82,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         doRequestWithAssert(deleteChatRoomsRequest);
 
-        Assert.assertEquals("Error, wrong status code on create existing chatRoom.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error, wrong status code on create existing chatRoom.",
+                "Error with create chat room. Chat room with name new chat room already exists.", errorResponse.errorMessage);
     }
 
     @Test
@@ -124,7 +125,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(deleteChatRoomsRequest);
 
-        Assert.assertEquals("Error wrong status code on delete not existing user.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on delete not existing user.",
+                "Error delete not existed chat room with id -1", errorResponse.errorMessage);
     }
 
     @Test
@@ -185,7 +187,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 new TokenRequest(loginDTO.token)).build();
 
         final ErrorResponse errorResponse = doErrorRequest(joinChatRoomRequest);
-        Assert.assertEquals("Error wrong status code on join not existed chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on join not existed chat room.",
+                "Error with join chat room. Chat room with id -1 not found.", errorResponse.errorMessage);
     }
 
     @Test
@@ -211,7 +214,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         doRequestWithAssert(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on join joined chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on join joined chat room.",
+                "Error with join chat room. User is already in current chat room.", errorResponse.errorMessage);
     }
 
     @Test
@@ -223,7 +227,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
                 .build();
 
         final ErrorResponse errorResponse = doErrorRequest(leaveChatRoomRequest);
-        Assert.assertEquals("Error wrong status code on leave not existed chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on leave not existed chat room.",
+                "Error with leave chat room. Chat room with id -1 not found.", errorResponse.errorMessage);
     }
 
     @Test
@@ -242,7 +247,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on leave not joined chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on leave not joined chat room.",
+                "Error with leave chat room. User is not in chat room.", errorResponse.errorMessage);
     }
 
     @Test
@@ -254,7 +260,8 @@ public class ChatRoomIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(getChatRoomUsersRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room user list.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on read not existed chat room user list.",
+                "Error with read chat room users. Chat room with id -1 not found.", errorResponse.errorMessage);
     }
 
 }

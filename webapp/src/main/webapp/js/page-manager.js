@@ -23,11 +23,12 @@ function PageManager(eventBus) {
         }
 
         $.get(page.template, function (data) {
-            var content = $($.parseHTML(data));
+            var content = $(data);
             if(currentPageController){
                 currentPageController.destroy();
-                currentPageController = page.controller(eventBus);
             }
+            currentPageController = page.controller;
+            page.controller.init();
             page.view(eventBus, content);
             eventBus.sendMessage(EventBusMessages.UPDATE_APPLICATION_VIEW, content);
         });

@@ -67,7 +67,8 @@ public class UserIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(deleteUserRequest);
 
-        Assert.assertEquals("Error wrong status code on delete not existed user.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on delete not existed user.",
+                "User with id -1 does not exists.", errorResponse.errorMessage);
     }
 
     @Test
@@ -78,7 +79,8 @@ public class UserIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(createUserRequest);
 
-        Assert.assertEquals("Error wrong status code on delete not existed user.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on delete not existed user.",
+                "User user1 already exists.", errorResponse.errorMessage);
     }
 
 

@@ -24,12 +24,9 @@ import java.util.List;
 @Transactional
 public class MessageServiceImpl implements MessageService {
 
-    public static final int FIVE_MINUTES = 300;
+    public static final int FIVE_MINUTES = 300*1000;
     @Inject
     private ChatRoomRepository chatRoomRepository;
-
-    @Inject
-    private UserAuthenticationService userAuthenticationService;
 
     @Inject
     private UserRepository userRepository;
@@ -50,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
         }
 
         final List<Message> allUserMessagesAfter = messageRepository.findAllUserMessagesAfter(actor.id,
-                chatRoomId.id, new Date(time));
+                chatRoomId.id, new Date(time+300));
         final ArrayList<MessageDTO> messageDTOs = new ArrayList<>(allUserMessagesAfter.size());
         for (Message message : allUserMessagesAfter) {
 

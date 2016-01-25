@@ -74,6 +74,8 @@ public class UserAuthenticationServiceImpl implements UserAuthenticationService 
             throw new AuthenticationException("Access denied.");
         }
 
+        userToken.setExpireTime(new Date(System.currentTimeMillis() + FIFTEEN_MINUTES));
+        tokenRepository.save(userToken);
     }
 
     @Override

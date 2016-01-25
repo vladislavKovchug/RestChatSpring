@@ -160,7 +160,8 @@ public class MessageIntegrationTest extends IntegrationTest {
                         .build();
         final ErrorResponse errorResponse = doErrorRequest(getMessagesRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.",
+                "Error with getting chat room messages. Chat room with id -1 not found.", errorResponse.errorMessage);
     }
 
     @Test
@@ -173,7 +174,8 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on post public message to not existed chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on post public message to not existed chat room.",
+                "No chat room with id -1 found.", errorResponse.errorMessage);
     }
 
     @Test
@@ -193,7 +195,8 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on post public message to not joined chat room.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on post public message to not joined chat room.",
+                "Error send message to not joined chat room.", errorResponse.errorMessage);
     }
 
     @Test
@@ -208,7 +211,8 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.",
+                "No chat room with id -1 found.", errorResponse.errorMessage);
     }
 
     @Test
@@ -230,7 +234,8 @@ public class MessageIntegrationTest extends IntegrationTest {
 
         final ErrorResponse errorResponse = doErrorRequest(postMessageRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.",
+                "Error send message to not joined chat room.", errorResponse.errorMessage);
     }
 
     @Test
@@ -262,7 +267,8 @@ public class MessageIntegrationTest extends IntegrationTest {
                 .build();
         doRequestWithAssert(leaveChatRoomRequest);
 
-        Assert.assertEquals("Error wrong status code on read not existed chat room messages.", "", errorResponse.errorMessage);
+        Assert.assertEquals("Error wrong status code on read not existed chat room messages.",
+                "Error send message to user that not joined chat room.", errorResponse.errorMessage);
     }
 
     private JsonArray readChatRoomMessages(LoginDTO loginDTO, long chatRoomId) {

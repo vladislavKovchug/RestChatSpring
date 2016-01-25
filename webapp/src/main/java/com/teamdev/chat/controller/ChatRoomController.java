@@ -52,7 +52,7 @@ public class ChatRoomController {
     @RequestMapping(path = "/chats/{chatId}/{userId}", method = RequestMethod.GET)
     public
     @ResponseBody
-    Iterable<UserProfileDTO> readChats(@PathVariable long chatId, @PathVariable long userId, @RequestParam(value = "token") String token) {
+    Iterable<UserProfileDTO> readChatUsers(@PathVariable long chatId, @PathVariable long userId, @RequestParam(value = "token") String token) {
         return chatRoomService.readChatRoomUserList(new UserId(userId), new ChatRoomId(chatId), new TokenDTO(token));
     }
 

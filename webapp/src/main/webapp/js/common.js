@@ -5,6 +5,10 @@ function TokenContainer(){
     };
 }
 
+var ChatConstants = {
+    "CHAT_READER_DELAY" : 5000
+}
+
 var EventBusMessages = {
     "UPDATE_APPLICATION_VIEW": 'UPDATE_APPLICATION_VIEW',
     "CHAT_LOADED": 'CHAT_LOADED',
@@ -15,19 +19,12 @@ var EventBusMessages = {
 
     "CHAT_ROOM_LIST_UPDATED" : 'CHAT_ROOM_LIST_UPDATED',
     "JOIN_CHAT_ROOM" : 'JOIN_CHAT_ROOM',
+    "JOINED_TO_CHAT_ROOM" : 'JOINED_TO_CHAT_ROOM',
+    "CHAT_ROOM_SELECTED" : 'CHAT_ROOM_SELECTED',
+
     "CHAT_ROOM_USER_LIST_UPDATED" : 'CHAT_ROOM_USER_LIST_UPDATED',
-    "UPDATE_JOINED_CHAT_ROOM_LIST" : 'UPDATE_JOINED_CHAT_ROOM_LIST',
+    "CHAT_ROOM_MESSAGES_UPDATED" : 'CHAT_ROOM_MESSAGES_UPDATED',
     "SEND_MESSAGE" : 'SEND_MESSAGE',
 
     "AUTHENTICATION_ERROR": 'AUTHENTICATION_ERROR'
-}
-
-var ChatRoomStorage = function () {
-
-    this.messages = [];
-    this.selectedChatRoomId = null;
-    this.joinedChatRooms = [];
-    this.token = {};
-    this.isLoggedIn = false;
-
 }

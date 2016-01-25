@@ -1,75 +1,42 @@
 <center>
-	<div class="chat">
-		<div class="top-box">
-			<div class="chat-room-container">
-				<div class="tabs-container" id="tabs-container">
-					<div class="tab {{active}}" id="select-tab-btn">{{name}}<button id="leave-chat-room-btn" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
-				</div>
-				<div class="message-list">
-				
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				messages<br>
-				
-				
-				
-				</div>
-			</div>
-			<div class="user-list">
-				<h4>Users:</h4>
+    <div class="chat">
+        <div class="top-box">
+            <div class="chat-room-container">
+                <div class="tabs-container" id="tabs-container">
+                    <div class="tab" id="select-tab-btn" chat-id="{{id}}">{{name}}
+                        <button id="leave-chat-room-btn" type="button" class="close" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    </div>
+                </div>
+                <div class="message-list" id="message-list">
+                    <div>[{{time}}] <{{fromUserName}}>: {{toUser}} {{message}}</div>
+                </div>
+            </div>
+            <div class="user-list">
+                <h4>Users:</h4>
 
-				<div id="user-list">
-					<div class="checkbox">
-						<label>
-							<input id="user-check" value="{{id}}" type="checkbox"> {{name}}
-						</label>
-					</div>
-				</div>
+                <div id="user-list">
+                    <div class="checkbox">
+                        <label>
+                            <input id="user_{{id}}" value="{{id}}" type="checkbox"> {{name}}
+                        </label>
+                    </div>
+                </div>
 
-			</div>
-		</div>
-		<div class="bottom-box">
-			<div class="message-container">
-				<textarea class="form-control" id="message-text"></textarea><br>
-				<button class="btn btn-primary" id="send-message-btn">Send</button>
-			</div>
-			<div class="chat-room-selector">
-				<h4>Select chatroom to join:</h4>
-					<select class="form-control" id="chat-room-selector">
-						<option value="{{id}}">{{name}}</option>
-					</select><br/>
-					<button class="btn btn-primary" id="join-chat-room-btn">Join</button>
-			</div>
-		</div>
-	<div>
+            </div>
+        </div>
+        <div class="bottom-box">
+            <div class="message-container">
+                <textarea class="form-control" id="message-text"></textarea><br>
+                <button class="btn btn-primary" id="send-message-btn">Send</button>
+            </div>
+            <div class="chat-room-selector">
+                <h4>Select chatroom to join:</h4>
+                <select class="form-control" id="chat-room-selector">
+                    <option value="{{id}}">{{name}}</option>
+                </select><br/>
+                <button class="btn btn-primary" id="join-chat-room-btn">Join</button>
+            </div>
+        </div>
+    </div>
 </center>
