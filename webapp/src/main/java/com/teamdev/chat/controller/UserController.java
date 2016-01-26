@@ -1,9 +1,6 @@
 package com.teamdev.chat.controller;
 
-import com.teamdev.chat.dto.RegisterUserDTO;
-import com.teamdev.chat.dto.TokenDTO;
-import com.teamdev.chat.dto.UserId;
-import com.teamdev.chat.dto.UserProfileDTO;
+import com.teamdev.chat.dto.*;
 import com.teamdev.chat.request.RegisterUserRequest;
 import com.teamdev.chat.service.UserManagementService;
 import com.teamdev.chat.service.UserService;
@@ -49,6 +46,13 @@ public class UserController {
     @ResponseBody
     UserProfileDTO readUserProfile(@PathVariable long actor, @PathVariable long userId, @RequestParam("token") String token) {
         return userService.readUserProfile(new UserId(actor), new UserId(userId), new TokenDTO(token));
+    }
+
+    @RequestMapping(path = "/users/chats/{userId}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Iterable<ChatRoomDTO> readAllUserChats(@PathVariable long userId, @RequestParam("token") String token) {
+        return userService.readUserJoinedChats(new UserId(userId), new TokenDTO(token));
     }
 
 }

@@ -1,6 +1,45 @@
 <center>
     <div class="chat">
+        <div class="control-panel" >
+            <div style="float: left;">Logged as: <b><span id="user-name-span"></span></b></div><div id="logout-btn" class="btn btn-danger">Logout</div>
+        </div>
+        <div>
+
+
+        </div>
         <div class="top-box">
+            <ul class="nav nav-tabs" id="tabs-container">
+                <li chat-id="{{id}}"><a data-toggle="pill" href="#chat_{{id}}">{{name}}
+                    <button id="leave-chat-room-btn" chat-id="{{id}}"
+                            type="button" class="close" aria-label="Close" style="margin-left: 5px;" >
+                        <span aria-hidden="true">&times;</span>
+                    </button></a>
+                </li>
+            </ul>
+            <div class="tab-content" id="chat-room-container">
+                <div id="chat_{{id}}" class="tab-pane">
+                    <div class="chat-box">
+                        <div class="chat-room-container">
+                            <div class="message-list" id="message-list">
+                                <div>[{{time}}] <{{fromUserName}}>: {{toUser}} {{message}}</div>
+                            </div>
+                        </div>
+                        <div class="user-list">
+                            <h4>Chat Users:</h4>
+                            <div id="user-list">
+                                <div class="checkbox" id="user_{{id}}">
+                                    <label>
+                                        <input value="{{id}}" type="checkbox"> {{name}}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        <!--
+
             <div class="chat-room-container">
                 <div class="tabs-container" id="tabs-container">
                     <div class="tab" id="select-tab-btn" chat-id="{{id}}">{{name}}
@@ -13,17 +52,17 @@
                 </div>
             </div>
             <div class="user-list">
-                <h4>Users:</h4>
+                <h4>Chat Users:</h4>
 
                 <div id="user-list">
-                    <div class="checkbox">
+                    <div class="checkbox" id="user_{{id}}">
                         <label>
-                            <input id="user_{{id}}" value="{{id}}" type="checkbox"> {{name}}
+                            <input value="{{id}}" type="checkbox"> {{name}}
                         </label>
                     </div>
                 </div>
 
-            </div>
+            </div> -->
         </div>
         <div class="bottom-box">
             <div class="message-container">

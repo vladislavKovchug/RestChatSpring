@@ -1,84 +1,90 @@
-#login-form, #register-form{
-	width: 500px;
-	margin: 10px;
+#login-form, #register-form {
+    width: 500px;
+    margin: 10px;
 }
 
-.chat{
-	margin-top: 10px;
-	width: 70%;
-	text-align: left;
+.chat {
+    margin-top: 10px;
+    width: 70%;
+    text-align: left;
 }
 
-.top-box{
-	height: 500px;
-	min-height: 83%;
-	display: flex;
-	border: 2px solid #ddd;
+.control-panel {
+    margin-bottom: 10px;
+    text-align: right;
 }
 
-.chat-room-container{
-	vertical-align: top;
-	width: calc(100% - 200px);
+.top-box {
+    height: 500px;
+    min-height: 83%;
+    border: 2px solid #ddd;
 }
 
-.tabs-container{
-	padding: 5px 2px;
-	height: 41px;
+.chat-box{
+    display: flex;
 }
 
-.tabs-container .tab{
-	cursor: pointer;
-	display: inline-block;
-	padding: 3px 10px;
-	margin-left: 10px;
-	border: 2px solid #337ab7;
-	border-radius: 13px;
+.chat-room-container {
+    vertical-align: top;
+    width: calc(100% - 200px);
 }
 
-.tabs-container .tab button{
-	margin-left: 10px;
+.tabs-container {
+    padding: 5px 2px;
+    height: 41px;
 }
 
-.tabs-container .tab.active{
-	cursor: default;
-	background-color: #337ab7;
-	color: #f7f7f9;
+.tabs-container .tab {
+    cursor: pointer;
+    display: inline-block;
+    padding: 3px 10px;
+    margin-left: 10px;
+    border: 2px solid #337ab7;
+    border-radius: 13px;
 }
 
-.message-list{
-	border-top: 2px solid #ddd;
-	padding: 5px 2px;
-	height: 455px;
-	overflow-y: scroll;
+.tabs-container .tab button {
+    margin-left: 10px;
 }
 
-.user-list{
-	padding: 8px;
-	vertical-align: top;
-	width: 200px;
-	background-color: #f7f7f9;
+.tabs-container .tab.active {
+    cursor: default;
+    background-color: #337ab7;
+    color: #f7f7f9;
 }
 
-
-.bottom-box{
-	margin-top: 20px;
-	height: 200px;
-	display: flex;
+.message-list {
+    padding: 5px 2px;
+    height: 455px;
+    overflow-y: scroll;
 }
 
-.message-container{
-	vertical-align: top;
-	width: calc(100% - 300px);
+.user-list {
+    padding: 8px;
+    vertical-align: top;
+    width: 200px;
+    background-color: #f7f7f9;
 }
 
-.message-container textarea{
-	width: 100%;
-	height: 131px;
+.bottom-box {
+    margin-top: 20px;
+    height: 200px;
+    display: flex;
 }
 
-.chat-room-selector{
-	padding-left: 20px;
-	vertical-align: top;
-	width: 300px;
+.message-container {
+    vertical-align: top;
+    width: calc(100% - 300px);
+}
+
+.message-container textarea {
+    width: 100%;
+    height: 131px;
+}
+
+.chat-room-selector {
+    padding-left: 20px;
+    vertical-align: top;
+    width: 300px;
 }
 
