@@ -275,12 +275,12 @@ function ChatService() {
     }
 
     function _leaveChatRoom(chatId, token, success, error, authenticationError){
-        restService.delete('/chat/chats/' + chatId + '/' + token.userId + 'token?=' + token.token,
+        restService.delete('/chat/chats/' + chatId + '/' + token.userId + '?token=' + token.token,
             success, error, authenticationError);
     }
 
     function _logout(token, success, error, authenticationError){
-        restService.delete('/chat/logout/' + token.userId + 'token?=' + token.token,
+        restService.delete('/chat/logout/' + token.userId + '?token=' + token.token,
         success, error, authenticationError);
     }
 
