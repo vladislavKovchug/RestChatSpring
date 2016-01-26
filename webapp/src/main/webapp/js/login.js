@@ -1,6 +1,6 @@
 function LoginController(eventBus, tokenContainer) {
 
-    var loginService = new LoginService(eventBus);
+    var loginService = new LoginService();
 
     eventBus.registerConsumer(EventBusMessages.LOGIN_USER, function (loginDto) {
         loginService.login(loginDto, onLoginSuccess, onLoginError);
@@ -33,9 +33,9 @@ function LoginView(eventBus, element) {
     }
 }
 
-function LoginService(eventBus){
+function LoginService(){
 
-    var restService = new RestService(eventBus);
+    var restService = new RestService();
 
     function _login(loginData, callback, errorHandler){
         restService.post('/chat/login', loginData, callback, errorHandler, errorHandler);

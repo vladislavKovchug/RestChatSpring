@@ -1,15 +1,15 @@
-function RestService(eventBus) {
+function RestService() {
 
-    var _get = function (url, callback, error, loginError) {
+    var _get = function (url, callback, error, authenticationError) {
         $.ajax({
             url: url,
             type: 'GET',
-            statusCode: buildStatusCode(error, loginError),
+            statusCode: buildStatusCode(error, authenticationError),
             success: callback
         });
     };
 
-    var _post = function (url, data, callback, error, loginError) {
+    var _post = function (url, data, callback, error, authenticationError) {
         $.ajax({
             url: url,
             type: 'POST',
@@ -19,12 +19,12 @@ function RestService(eventBus) {
                 'Content-Type': 'application/json'
             },
             dataType: 'json',
-            statusCode: buildStatusCode(error, loginError),
+            statusCode: buildStatusCode(error, authenticationError),
             success: callback
         });
     };
 
-    var _put = function (url, data, callback, error, loginError) {
+    var _put = function (url, data, callback, error, authenticationError) {
         $.ajax({
             url: url,
             type: 'PUT',
@@ -34,26 +34,26 @@ function RestService(eventBus) {
                 'Content-Type': 'application/json'
             },
             dataType: 'json',
-            statusCode: buildStatusCode(error, loginError),
+            statusCode: buildStatusCode(error, authenticationError),
             success: callback
         });
     };
 
-    var _delete = function (url, callback, error, loginError) {
+    var _delete = function (url, callback, error, authenticationError) {
         $.ajax({
             url: url,
             type: 'DELETE',
-            statusCode: buildStatusCode(error, loginError),
+            statusCode: buildStatusCode(error, authenticationError),
             success: callback
         });
     };
 
-    function buildStatusCode(errorHandler, loginErrorHandler){
+    function buildStatusCode(errorHandler, authenticationErrorHandler){
         return {
             403: function (data) {
                 var errorMessage = JSON.parse(data.responseText).errorMessage;
-                if(loginErrorHandler){
-                    loginErrorHandler(errorMessage);
+                if(authenticationErrorHandler){
+                    authenticationErrorHandler(errorMessage);
                 }
             },
             500: function (data) {

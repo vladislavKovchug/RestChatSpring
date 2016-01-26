@@ -33,4 +33,8 @@ function ApplicationView(eventBus, element) {
         window.location = '#chat';
     });
 
+    eventBus.registerConsumer(EventBusMessages.USER_REGISTERED, function () {
+        window.location = '#login';
+    });
+
 }

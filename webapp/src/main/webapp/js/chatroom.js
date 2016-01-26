@@ -3,7 +3,7 @@ function ChatController(eventBus, tokenContainer) {
     var repeatTimer = false;
     var activeChatRoom = null;
     var lastMessageTime = -1;
-    var chatService = new ChatService(eventBus);
+    var chatService = new ChatService();
 
     eventBus.registerConsumer(EventBusMessages.CHAT_LOADED, onViewLoaded);
 
@@ -30,6 +30,17 @@ function ChatController(eventBus, tokenContainer) {
         }
     });
 
+    eventBus.registerConsumer(EventBusMessages.LEAVE_CHAT_ROOM, function(chatRoomId){
+        chatService.leaveChatRoom(chatRoomId, tokenContainer.token, function(){
+
+            if(activeChatRoom == chatRoomId){
+                repeatTimer = false;
+            }
+            eventBus.sendMessage(EventBusMessages.CHAT_ROOM_LEFT, chatRoomId);
+
+        }, onAuthenticationError, onAuthenticationError);
+    });
+
     function onViewLoaded() {
         if (!tokenContainer.token.userId || !tokenContainer.token.token) {
             logout();
@@ -49,11 +60,11 @@ function ChatController(eventBus, tokenContainer) {
     }
 
     function logout() {
+        repeatTimer = false;
         eventBus.sendMessage(EventBusMessages.USER_LOGGED_OUT);
     }
 
     function destroy() {
-        repeatTimer = false;
         logout();
     }
 
@@ -62,8 +73,8 @@ function ChatController(eventBus, tokenContainer) {
             logout();
             return;
         }
-        chatService.readUserProfile(tokenContainer.token.userId, tokenContainer.token, function () {
-            },
+
+        chatService.readUserProfile(tokenContainer.token.userId, tokenContainer.token, function () {},
             onAuthenticationError, onAuthenticationError);
     }
 
@@ -156,6 +167,16 @@ function ChatView(eventBus, element) {
         }
     });
 
+    eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_LEFT, function(chatId){
+        var tab = $(tabsContainer.find('*[chat-id="1"]').get(0));
+        tab.detach();
+
+        if (selectedTab && selectedTab.attr("chat-id") == tab.attr('chat-id')) {
+            userList.empty();
+            messageList.empty();
+        }
+    });
+
     eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_MESSAGES_UPDATED, function (messages) {
         for (var i = 0; i < messages.length; i++) {
             var newElement = messageListPattern;
@@ -192,6 +213,8 @@ function ChatView(eventBus, element) {
     });
 
     function onLeaveChatRoom(event) {
+        var chatId = $(event.currentTarget).attr("chat-id");
+        eventBus.sendMessage(EventBusMessages.LEAVE_CHAT_ROOM, chatId);
         event.stopPropagation();
     }
 
@@ -210,8 +233,8 @@ function ChatView(eventBus, element) {
 
 }
 
-function ChatService(eventBus) {
-    var restService = new RestService(eventBus);
+function ChatService() {
+    var restService = new RestService();
 
     function _readUserProfile(userId, token, success, error, authenticationError) {
         restService.get('/chat/users/' + token.userId + '/' + userId + '?token=' + token.token,
@@ -251,12 +274,24 @@ function ChatService(eventBus) {
         }
     }
 
+    function _leaveChatRoom(chatId, token, success, error, authenticationError){
+        restService.delete('/chat/chats/' + chatId + '/' + token.userId + 'token?=' + token.token,
+            success, error, authenticationError);
+    }
+
+    function _logout(token, success, error, authenticationError){
+        restService.delete('/chat/logout/' + token.userId + 'token?=' + token.token,
+        success, error, authenticationError);
+    }
+
     return {
         "readUserProfile": _readUserProfile,
         "readChatRooms": _readChatRooms,
         "joinChatRoom": _joinChatRoom,
         "readChatRoomUserList": _readChatRoomUserList,
         "readChatMessages": _readChatMessages,
-        "postMessage": _postMessage
+        "postMessage": _postMessage,
+        "leaveChatRoom" : _leaveChatRoom,
+        "logout" : _logout
     }
 }
