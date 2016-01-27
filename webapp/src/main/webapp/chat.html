@@ -3,10 +3,6 @@
         <div class="control-panel" >
             <div style="float: left;">Logged as: <b><span id="user-name-span"></span></b></div><div id="logout-btn" class="btn btn-danger">Logout</div>
         </div>
-        <div>
-
-
-        </div>
         <div class="top-box">
             <ul class="nav nav-tabs" id="tabs-container">
                 <li chat-id="{{id}}"><a data-toggle="pill" href="#chat_{{id}}">{{name}}
@@ -37,32 +33,6 @@
                     </div>
                 </div>
             </div>
-
-        <!--
-
-            <div class="chat-room-container">
-                <div class="tabs-container" id="tabs-container">
-                    <div class="tab" id="select-tab-btn" chat-id="{{id}}">{{name}}
-                        <button id="leave-chat-room-btn" type="button" class="close" aria-label="Close" chat-id="{{id}}"><span
-                                aria-hidden="true">&times;</span></button>
-                    </div>
-                </div>
-                <div class="message-list" id="message-list">
-                    <div>[{{time}}] <{{fromUserName}}>: {{toUser}} {{message}}</div>
-                </div>
-            </div>
-            <div class="user-list">
-                <h4>Chat Users:</h4>
-
-                <div id="user-list">
-                    <div class="checkbox" id="user_{{id}}">
-                        <label>
-                            <input value="{{id}}" type="checkbox"> {{name}}
-                        </label>
-                    </div>
-                </div>
-
-            </div> -->
         </div>
         <div class="bottom-box">
             <div class="message-container">
@@ -74,7 +44,23 @@
                 <select class="form-control" id="chat-room-selector">
                     <option value="{{id}}">{{name}}</option>
                 </select><br/>
+                <div class="alert alert-danger" id="join-chat-room-error-message">Error</div>
                 <button class="btn btn-primary" id="join-chat-room-btn">Join</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="chat-error-modal-dialog" tabindex="-1" role="dialog" style="text-align: left;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #d2322d; color: #fff;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Error</h4>
+                </div>
+                <div class="modal-body" id="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>

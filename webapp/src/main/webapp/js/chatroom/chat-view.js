@@ -28,9 +28,14 @@ function ChatView(eventBus, element) {
     var chatRoomPattern = chatRoomContainer.html();
     chatRoomContainer.empty();
 
+    var joinChatRoomErrorMessage = element.find('#join-chat-room-error-message');
+    joinChatRoomErrorMessage.hide();
+
+    var chatErrorModalDialog = element.find('#chat-error-modal-dialog');
+
     eventBus.registerConsumer(EventBusMessages.USER_PROFILE_UPDATED, function(userProfile){
         userNameContainer.html(userProfile.name);
-    })
+    });
 
     eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_LIST_UPDATED, function (chatRooms) {
         chatRoomSelector.empty();
@@ -65,7 +70,6 @@ function ChatView(eventBus, element) {
                 userIdList.push($(this).val());
             }
         });
-
 
         //update, add new users
         for (var i = 0; i < items.length; i++) {
@@ -103,6 +107,19 @@ function ChatView(eventBus, element) {
         }
     });
 
+    eventBus.registerConsumer(EventBusMessages.SHOW_JOIN_CHAT_ROOM_ERROR_MESSAGE, function(message){
+        joinChatRoomErrorMessage.html(message);
+        joinChatRoomErrorMessage.alert();
+        joinChatRoomErrorMessage.fadeTo(2000, 500).slideUp(500, function(){
+            joinChatRoomErrorMessage.hide();
+        });
+    });
+
+    eventBus.registerConsumer(EventBusMessages.SHOW_CHAT_ERROR_MESSAGE, function(message){
+        chatErrorModalDialog.find('#modal-body').html(message);
+        chatErrorModalDialog.modal('show');
+    });
+
     logoutBtn.click(function(){
         eventBus.sendMessage(EventBusMessages.LOGOUT_USER);
     });
@@ -132,6 +149,10 @@ function ChatView(eventBus, element) {
             message: messageText,
             users: selectedUsers
         });
+    });
+
+    chatErrorModalDialog.on('hidden.bs.modal', function () {
+        eventBus.sendMessage(EventBusMessages.CHAT_ERROR_MESSAGE_SHOWED);
     });
 
     function onLeaveChatRoom(event) {

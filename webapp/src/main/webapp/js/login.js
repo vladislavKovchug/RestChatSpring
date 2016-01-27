@@ -12,7 +12,7 @@ function LoginController(eventBus, tokenContainer) {
     }
 
     function onLoginError(errorMessage){
-        alert(errorMessage);
+        eventBus.sendMessage(EventBusMessages.SHOW_LOGIN_ERROR_MESSAGE, errorMessage);
     }
 
     return {
@@ -25,6 +25,17 @@ function LoginView(eventBus, element) {
 
     var loginInput = element.find('#login-input');
     var passwordInput = element.find('#password-input');
+    var errorMessage = element.find('#error-message');
+
+    errorMessage.hide();
+
+    eventBus.registerConsumer(EventBusMessages.SHOW_LOGIN_ERROR_MESSAGE, function(message){
+        errorMessage.html(message);
+        errorMessage.alert();
+        errorMessage.fadeTo(2000, 500).slideUp(500, function(){
+            errorMessage.hide();
+        });
+    });
 
     element.find('#login-btn').click(onLoginBtnClick);
 

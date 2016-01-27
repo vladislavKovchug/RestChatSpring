@@ -14,9 +14,7 @@ function ChatController(eventBus, tokenContainer) {
     });
 
     eventBus.registerConsumer(EventBusMessages.SEND_MESSAGE, function (sendMessageDTO) {
-        chatService.postMessage(sendMessageDTO.message, sendMessageDTO.users, sendMessageDTO.chatId, tokenContainer.token, function () {
-            chatContentReaderService.doTimerStep();
-        }, onChatError, onChatError);
+        chatService.postMessage(sendMessageDTO.message, sendMessageDTO.users, sendMessageDTO.chatId, tokenContainer.token, function () {}, onChatError, onChatError);
     });
 
     eventBus.registerConsumer(EventBusMessages.LEAVE_CHAT_ROOM, function(chatRoomId){
@@ -45,6 +43,8 @@ function ChatController(eventBus, tokenContainer) {
 
     eventBus.registerConsumer(EventBusMessages.LOGOUT_USER, logout);
 
+    eventBus.registerConsumer(EventBusMessages.CHAT_ERROR_MESSAGE_SHOWED, logout);
+
     function onViewLoaded() {
         chatService.readUserProfile(tokenContainer.token.userId, tokenContainer.token, function (userProfile) {
                 eventBus.sendMessage(EventBusMessages.USER_PROFILE_UPDATED, userProfile);
@@ -66,20 +66,19 @@ function ChatController(eventBus, tokenContainer) {
 
     function onChatError(errorMessage) {
         if(handleErrors){
-            alert(errorMessage);
-            logout();
+            handleErrors = false;
+            eventBus.sendMessage(EventBusMessages.SHOW_CHAT_ERROR_MESSAGE, errorMessage);
         }
     }
 
     function onJoinCharRoomError(errorMessage){
-        alert(errorMessage);
+        eventBus.sendMessage(EventBusMessages.SHOW_JOIN_CHAT_ROOM_ERROR_MESSAGE, errorMessage);
     }
 
     function logout() {
         chatService.logout(tokenContainer.token, function(){}, function(){}, function(){});
         chatContentReaderService.stopTimer();
         eventBus.sendMessage(EventBusMessages.USER_LOGGED_OUT);
-        handleErrors = false;
     }
 
     function init(){

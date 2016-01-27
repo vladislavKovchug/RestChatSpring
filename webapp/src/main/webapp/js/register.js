@@ -4,15 +4,18 @@ function RegisterController(eventBus) {
 
     eventBus.registerConsumer(EventBusMessages.REGISTER_USER, onRegister);
 
+    eventBus.registerConsumer(EventBusMessages.REGISTER_SUCCESS_MESSAGE_SHOWED, function(){
+        eventBus.sendMessage(EventBusMessages.USER_REGISTERED);
+    });
+
     function onRegister(registerData){
         registerService.registerUser(registerData, function(){
-            alert('User registered.');
-            eventBus.sendMessage(EventBusMessages.USER_REGISTERED);
+            eventBus.sendMessage(EventBusMessages.SHOW_REGISTER_SUCCESS_MESSAGE, 'User registered.');
         }, onError);
     }
 
     function onError(errorMessage){
-        alert(errorMessage);
+        eventBus.sendMessage(EventBusMessages.SHOW_REGISTER_ERROR_MESSAGE, errorMessage);
     }
 
     return {
@@ -25,11 +28,33 @@ function RegisterController(eventBus) {
 
 function RegisterView(eventBus, element) {
     var date = element.find('#datetimepicker');
-    var datepicker = date.datetimepicker({
+    var errorMessage = element.find('#error-message');
+    var successMessage = element.find('#success-message');
+
+    element.find('#register-btn').click(onRegister);
+    errorMessage.hide();
+    successMessage.hide();
+
+    var datetimepicker = date.datetimepicker({
         format: 'MM/DD/YYYY'
     });
 
-    element.find('#register-btn').click(onRegister);
+    eventBus.registerConsumer(EventBusMessages.SHOW_REGISTER_ERROR_MESSAGE, function(message){
+        errorMessage.html(message);
+        errorMessage.alert();
+        errorMessage.fadeTo(2000, 500).slideUp(500, function(){
+            errorMessage.hide();
+        });
+    });
+
+    eventBus.registerConsumer(EventBusMessages.SHOW_REGISTER_SUCCESS_MESSAGE, function(message){
+        successMessage.html(message);
+        successMessage.alert();
+        successMessage.fadeTo(2000, 500).slideUp(500, function(){
+            successMessage.hide();
+            eventBus.sendMessage(EventBusMessages.REGISTER_SUCCESS_MESSAGE_SHOWED);
+        });
+    });
 
     function onRegister() {
         var login = element.find('#login-input').val();
