@@ -76,6 +76,7 @@ function ChatController(eventBus, tokenContainer) {
     }
 
     function logout() {
+        handleErrors = false;
         chatService.logout(tokenContainer.token, function(){}, function(){}, function(){});
         chatContentReaderService.stopTimer();
         eventBus.sendMessage(EventBusMessages.USER_LOGGED_OUT);
