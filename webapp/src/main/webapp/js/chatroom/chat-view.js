@@ -65,7 +65,7 @@ function ChatView(eventBus, element) {
         var items = users.items;
 
         var userIdList = [];
-        chatRoomContainer.find('#chat_' + chatId + ' #user-list input').each(function (el) {
+        chatRoomContainer.find('#chat_' + chatId + ' #user-list input').each(function () {
             if ($(this).val()) {
                 userIdList.push($(this).val());
             }
@@ -136,7 +136,7 @@ function ChatView(eventBus, element) {
         }
         var chatId = selectedTab.attr("chat-id");
         var selectedUsers = [];
-        chatRoomContainer.find('#chat_' + chatId + ' #user-list input:checked').each(function (el) {
+        chatRoomContainer.find('#chat_' + chatId + ' #user-list input:checked').each(function () {
             if ($(this).val()) {
                 selectedUsers.push($(this).val());
             }
