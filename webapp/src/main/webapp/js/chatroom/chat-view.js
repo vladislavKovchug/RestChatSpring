@@ -56,11 +56,11 @@ function ChatView(eventBus, element) {
     });
 
     eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_USER_LIST_UPDATED, function (users) {
-        var selectedTab = tabsContainer.find("li.active");
-        var chatId = selectedTab.attr("chat-id");
+        var chatId = users.chatRoomId;
+        var items = users.items;
 
         var userIdList = [];
-        chatRoomContainer.('#chat_' + chatId + ' #user-list input').each(function (el) {
+        chatRoomContainer.find('#chat_' + chatId + ' #user-list input').each(function (el) {
             if ($(this).val()) {
                 userIdList.push($(this).val());
             }
@@ -68,41 +68,38 @@ function ChatView(eventBus, element) {
 
 
         //update, add new users
-        for (var i = 0; i < users.length; i++) {
-            var newElement = userListPattern;
-            for (var key in users[i]) {
-                newElement = newElement.replace(new RegExp('{{' + key + '}}', 'g'), users[i][key]);
-            }
-            if (!chatRoomContainer.('#chat_' + chatId + ' #user-list #user_' + users[i].id).length) {
-                chatRoomContainer.('#chat_' + chatId + ' #user-list').append(newElement);
+        for (var i = 0; i < items.length; i++) {
+            var newElement = createElementFromTemplate(userListPattern, items[i]);
+            if (!chatRoomContainer.find('#chat_' + chatId + ' #user-list #user_' + items[i].id).length) {
+                chatRoomContainer.find('#chat_' + chatId + ' #user-list').append(newElement);
             }
         }
 
         //remove users not in list
         for(var i=0; i<userIdList.length; i++){
             var userExists = false;
-            for(var j = 0; j < users.length; j++){
-                if(userIdList[i] == users[j].id){
+            for(var j = 0; j < items.length; j++){
+                if(userIdList[i] == items[j].id){
                     userExists = true; break;
                 }
             }
             if(!userExists){
-                chatRoomContainer.('#chat_' + chatId + ' #user-list #user_' + userIdList[i]).detach();
+                chatRoomContainer.find('#chat_' + chatId + ' #user-list #user_' + userIdList[i]).detach();
             }
         }
     });
 
     eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_MESSAGES_UPDATED, function (messages) {
-        var selectedTab = tabsContainer.find("li.active");
-        var chatId = selectedTab.attr("chat-id");
+        var chatId = messages.chatRoomId;
+        var items = messages.items;
 
-        for (var i = 0; i < messages.length; i++) {
-            var date = new Date(messages[i].date);
-            messages[i].formatedTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-            messages[i].formatedToUserName = '<b>' + messages[i].toUserName + '</b> ,';
+        for (var i = 0; i < items.length; i++) {
+            var date = new Date(items[i].date);
+            items[i].formatedTime = date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+            items[i].formatedToUserName = items[i].privateMessage ? '<b>' + items[i].toUserName + '</b> ,' : '';
 
-            var newElement = createElementFromTemplate(messageListPattern, messages[i]);
-            messageList.append(newElement);
+            var newElement = createElementFromTemplate(messageListPattern, items[i]);
+            chatRoomContainer.find('#chat_' + chatId + ' #message-list').append(newElement);
         }
     });
 
@@ -122,7 +119,7 @@ function ChatView(eventBus, element) {
         }
         var chatId = selectedTab.attr("chat-id");
         var selectedUsers = [];
-        chatRoomContainer.('#chat_' + chatId + ' #user-list input:checked').each(function (el) {
+        chatRoomContainer.find('#chat_' + chatId + ' #user-list input:checked').each(function (el) {
             if ($(this).val()) {
                 selectedUsers.push($(this).val());
             }
@@ -157,6 +154,7 @@ function ChatView(eventBus, element) {
     function createElementFromTemplate(template, data){
         var newElement = template;
         for (var key in data) {
+            if(!data.hasOwnProperty(key)) continue;
             newElement = newElement.replace(new RegExp('{{' + key + '}}', 'g'), data[key]);
         }
         return $(newElement);

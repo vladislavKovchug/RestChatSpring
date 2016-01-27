@@ -1,46 +1,45 @@
 function ChatController(eventBus, tokenContainer) {
 
-    var repeatTimer = false;
     var joinedChatRooms = [];
-
-    var activeChatRoom = null;
-    var lastMessageTime = -1;
+    var handleErrors = false;
 
     var chatService = new ChatService();
+    var chatContentReaderService = new ChatContentReaderService(eventBus, joinedChatRooms);
 
     eventBus.registerConsumer(EventBusMessages.CHAT_LOADED, onViewLoaded);
 
     eventBus.registerConsumer(EventBusMessages.JOIN_CHAT_ROOM, function (chatRoomId) {
         chatService.joinChatRoom(chatRoomId, tokenContainer.token, joinChatRoom,
-            onChatError, onChatError);
+            onJoinCharRoomError, onChatError);
     });
 
-    eventBus.registerConsumer(EventBusMessages.CHAT_ROOM_SELECTED, function (chatRoomId) {
-        if (!repeatTimer) {
-            repeatTimer = true;
-            setTimeout(readChatRoomContent, ChatConstants.CHAT_READER_DELAY);
-        }
-        activeChatRoom = chatRoomId;
-        lastMessageTime = -1;
-        readChatRoomContent(true);
-    });
-
-    eventBus.registerConsumer(EventBusMessages.SEND_MESSAGE, function (message) {
-        if (activeChatRoom) {
-            chatService.postMessage(message.message, message.users, activeChatRoom, tokenContainer.token, function (data) {
-                readChatRoomContent(true);
-            }, onChatError, onChatError);
-        }
+    eventBus.registerConsumer(EventBusMessages.SEND_MESSAGE, function (sendMessageDTO) {
+        chatService.postMessage(sendMessageDTO.message, sendMessageDTO.users, sendMessageDTO.chatId, tokenContainer.token, function () {
+            chatContentReaderService.doTimerStep();
+        }, onChatError, onChatError);
     });
 
     eventBus.registerConsumer(EventBusMessages.LEAVE_CHAT_ROOM, function(chatRoomId){
         chatService.leaveChatRoom(chatRoomId, tokenContainer.token, function(){
-
-            if(activeChatRoom == chatRoomId){
-                repeatTimer = false;
-            }
             eventBus.sendMessage(EventBusMessages.CHAT_ROOM_LEFT, chatRoomId);
+        }, onChatError, onChatError);
+    });
 
+    eventBus.registerConsumer(EventBusMessages.UPDATE_CHAT_ROOM_MESSAGES, function(updateMessagesDTO){
+        chatService.readChatMessages(updateMessagesDTO.chatRoomId, updateMessagesDTO.time, tokenContainer.token, function (items) {
+            eventBus.sendMessage(EventBusMessages.CHAT_ROOM_MESSAGES_UPDATED, {
+                "chatRoomId" : updateMessagesDTO.chatRoomId,
+                "items" : items
+            });
+        }, onChatError, onChatError);
+    });
+
+    eventBus.registerConsumer(EventBusMessages.UPDATE_CHAT_ROOM_USER_LIST, function(chatRoomId){
+        chatService.readChatRoomUserList(chatRoomId, tokenContainer.token, function (items) {
+            eventBus.sendMessage(EventBusMessages.CHAT_ROOM_USER_LIST_UPDATED, {
+                "chatRoomId" : chatRoomId,
+                "items" : items
+            });
         }, onChatError, onChatError);
     });
 
@@ -62,51 +61,35 @@ function ChatController(eventBus, tokenContainer) {
     }
 
     function joinChatRoom(chatRoom) {
-        joinedChatRooms[chatRoom.id] = {
-            id : chatRoom.id,
-            lastMessageTime : -1
-        };
         eventBus.sendMessage(EventBusMessages.JOINED_TO_CHAT_ROOM, chatRoom);
     }
 
     function onChatError(errorMessage) {
-        repeatTimer = false;
+        if(handleErrors){
+            alert(errorMessage);
+            logout();
+        }
+    }
+
+    function onJoinCharRoomError(errorMessage){
         alert(errorMessage);
-        logout();
     }
 
     function logout() {
-        chatService.logout(token, function(){}, function(){}, function(){});
-        repeatTimer = false;
+        chatService.logout(tokenContainer.token, function(){}, function(){}, function(){});
+        chatContentReaderService.stopTimer();
         eventBus.sendMessage(EventBusMessages.USER_LOGGED_OUT);
+        handleErrors = false;
     }
 
     function init(){
-
+        joinedChatRooms = [];
+        handleErrors = true;
+        chatContentReaderService.startTimer();
     }
 
     function destroy() {
-        logout();
-    }
-
-    function readChatRoomContent(notInTimer) {
-
-        console.log("messages load" + activeChatRoom);
-
-        chatService.readChatRoomUserList(activeChatRoom, tokenContainer.token, function (data) {
-            eventBus.sendMessage(EventBusMessages.CHAT_ROOM_USER_LIST_UPDATED, data);
-        }, onChatError, onChatError);
-
-        chatService.readChatMessages(activeChatRoom, lastMessageTime, tokenContainer.token, function (messages) {
-            if(messages.length > 0){
-                lastMessageTime = messages[messages.length-1].date;
-            }
-            eventBus.sendMessage(EventBusMessages.CHAT_ROOM_MESSAGES_UPDATED, messages);
-        }, onChatError, onChatError);
-
-        if (!notInTimer && repeatTimer) {
-            setTimeout(readChatRoomContent, ChatConstants.CHAT_READER_DELAY);
-        }
+        chatContentReaderService.stopTimer();
     }
 
     return {
