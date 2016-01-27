@@ -32,8 +32,6 @@ function PageManager(eventBus) {
             page.view(eventBus, content);
             eventBus.sendMessage(EventBusMessages.UPDATE_APPLICATION_VIEW, content);
         });
-
-        console.log(hash);
     }
 
     function _setDefault(view, controller, template) {

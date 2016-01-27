@@ -15,8 +15,6 @@ $(function () {
         .view();
 
     ApplicationView(eventBus, $('#application-container'));
-
-    console.log('Application initialized');
 });
 
 function ApplicationView(eventBus, element) {
