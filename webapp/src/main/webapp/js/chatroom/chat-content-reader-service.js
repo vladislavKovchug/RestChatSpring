@@ -51,7 +51,7 @@ function ChatContentReaderService(eventBus, joinedChatRooms){
     }
 
     function _removeChatRoom(chatId){
-        delete this[chatId];
+        delete joinedChatRooms[chatId];
     }
 
     function _startTimer(){

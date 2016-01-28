@@ -42,6 +42,14 @@ public class MessageServiceImpl implements MessageService {
                     Long.toString(chatRoomId.id) + " not found.");
         }
 
+        final User user = userRepository.findOne(actor.id);
+        if(!chatRoom.getUsers().contains(user)){
+            throw new ChatException("Error with getting chat room messages. User not joined to chat " +
+                    chatRoom.getName() + " not found.");
+        }
+
+
+
         if (time == -1) { //if time not defined, should select messages for last 5 minutes
             time = new Date().getTime() - FIVE_MINUTES;
         }
