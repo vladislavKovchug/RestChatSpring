@@ -19,7 +19,7 @@ public class SampleDataCreator {
 
     public void createSampleData(){
         userManagementService.register(new RegisterUserDTO("user1", "12345", new Date()));
-        userManagementService.register(new RegisterUserDTO("user2", "big_password123", new Date()));
+        userManagementService.register(new RegisterUserDTO("user2", "12345", new Date()));
 
         final ChatRoomDTO chat1 = chatRoomService.addChatRoom("chat");
         final ChatRoomDTO chat2 = chatRoomService.addChatRoom("chat 2");

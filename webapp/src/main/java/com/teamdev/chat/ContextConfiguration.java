@@ -69,7 +69,7 @@ public class ContextConfiguration extends WebMvcConfigurerAdapter {
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost/chat");
         dataSource.setUsername( "root" );
-        dataSource.setPassword( "vertrigo" );
+        dataSource.setPassword( "toor" );
         return dataSource;
     }
 
