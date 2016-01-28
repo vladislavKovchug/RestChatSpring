@@ -14,7 +14,9 @@ function ChatController(eventBus, tokenContainer) {
     });
 
     eventBus.registerConsumer(EventBusMessages.SEND_MESSAGE, function (sendMessageDTO) {
-        chatService.postMessage(sendMessageDTO.message, sendMessageDTO.users, sendMessageDTO.chatId, tokenContainer.token, function () {}, onChatError, onChatError);
+        chatService.postMessage(sendMessageDTO.message, sendMessageDTO.users, sendMessageDTO.chatId, tokenContainer.token, function () {
+            chatContentReaderService.doTimerStep();
+        }, onChatError, onChatError);
     });
 
     eventBus.registerConsumer(EventBusMessages.LEAVE_CHAT_ROOM, function(chatRoomId){

@@ -6,7 +6,7 @@ function TokenContainer(){
 }
 
 var ChatConstants = {
-    "CHAT_READER_DELAY" : 1500
+    "CHAT_READER_DELAY" : 5000
 };
 
 var EventBusMessages = {
