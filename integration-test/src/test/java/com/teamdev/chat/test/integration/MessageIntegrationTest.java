@@ -19,6 +19,9 @@ import java.util.List;
 
 public class MessageIntegrationTest extends IntegrationTest {
 
+    public static final String USER2_LOGIN = "user2";
+    public static final String USER2_PASSWORD = "12345";
+
     @Test
     public void testPostPublicMessage() {
         final LoginDTO loginDTO = loginAsTestUser();
@@ -103,7 +106,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     @Test
     public void testPostPrivateMessage() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
-        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+        final LoginDTO secondUserLoginDTO = loginUser(USER2_LOGIN, USER2_PASSWORD);
         final String message = "pss.. do you want some force push ?";
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
@@ -202,7 +205,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     @Test
     public void testPostingPrivateMessageToNotExistingChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
-        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+        final LoginDTO secondUserLoginDTO = loginUser(USER2_LOGIN, USER2_PASSWORD);
 
         final HttpUriRequest postMessageRequest =
                 addJsonParameters(RequestBuilder.post(CHAT_URL + "/messages/-1" +
@@ -218,7 +221,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     @Test
     public void testPostingPrivateMessageToNotJoinedChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
-        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+        final LoginDTO secondUserLoginDTO = loginUser(USER2_LOGIN, USER2_PASSWORD);
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
         if (!chatRoomDTOs.iterator().hasNext()) {
@@ -241,7 +244,7 @@ public class MessageIntegrationTest extends IntegrationTest {
     @Test
     public void testPostingPrivateMessageToUserNotInChatRoomFail() {
         final LoginDTO testUserLoginDTO = loginAsTestUser();
-        final LoginDTO secondUserLoginDTO = loginUser("user2", "big_password123");
+        final LoginDTO secondUserLoginDTO = loginUser(USER2_LOGIN, USER2_PASSWORD);
 
         final List<ChatRoomDTO> chatRoomDTOs = readAllChatRooms(testUserLoginDTO);
         if (!chatRoomDTOs.iterator().hasNext()) {
